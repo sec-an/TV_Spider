@@ -1,22 +1,11 @@
 # -*- coding:utf-8 -*-
 from urllib.parse import quote_plus
 import requests
-import re
 from utils import ali
 
 
 Tag = "yiso"
 siteUrl = "https://yiso.fun"
-
-
-def Regex(pattern, content):
-    try:
-        matcher = re.findall(pattern, content)
-        if matcher:
-            return matcher[0]
-    except Exception as e:
-        print(e)
-    return ""
 
 
 def getHeaders():
