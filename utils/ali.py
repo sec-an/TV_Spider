@@ -102,7 +102,7 @@ def getdetailContent(tag, url):
             "vod_name": share_info.share_name,
             "vod_pic": share_info.avatar,
             "vod_content": url,
-            "vod_play_from": "AliYun$$$AliYun原画"
+            "vod_play_from": "AliYun原画$$$AliYun"
         }
         file_type = fileinfo.type
         if file_type != "folder":
