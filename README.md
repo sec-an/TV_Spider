@@ -3,6 +3,12 @@
 
 基于Python 3
 
+[Docker安装步骤]
+创建镜像：
+docker image build -t tv:latest  .
+运行容器：
+docker run --name TV --net="host" -v /opt/TV（源码所在目录）:/TV tv:latest gunicorn -w 4 -b 0.0.0.0:8080 app:app
+
 [使用宝塔安装的简略步骤](https://github.com/sec-an/TV_Spider/blob/main/doc/install_through_btpanel.md)
 ### `仅供Python爬虫学习交流使用！切勿用于违法用途，否则开发者不承担任何责任。`
 ### `欢迎Star 欢迎PR`
