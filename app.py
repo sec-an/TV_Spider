@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 from spider import *
 from flask import Flask, abort, request, jsonify
 from flask_cors import CORS
@@ -10,6 +11,7 @@ cors = CORS(app)
 site_list = [
     "cokemv",
     "czspp",
+    "gitcafe",
     "libvio",
     "smdyy",
     "voflix",
