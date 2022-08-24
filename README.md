@@ -11,6 +11,7 @@
 | :----: | :----: |
 |`cokemv`|[COKEMV影视](https://cokemv.me/)|
 |`czspp`|[厂长资源](https://czspp.com/)|
+|`gitcafe`|[小纸条](https://u.gitcafe.net/)|
 |`libvio`|[LIBVIO影视](https://www.libvio.me/)|
 |`smdyy`|[神马影院](https://www.smdyy.cc/)|
 |`voflix`|[VOFLIX HD](https://www.voflix.com/)|
