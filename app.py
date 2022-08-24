@@ -7,7 +7,7 @@ app = Flask(__name__)
 cors = CORS(app)
 
 
-sites = [
+site_list = [
     "cokemv",
     "czspp",
     "libvio",
@@ -32,16 +32,29 @@ def vod():
         ids = request.args.get('ids')
         q = request.args.get('q')
 
-        # 搜索
+        sites = request.args.get('sites')
+
+        # 鎼滅储
         if wd:
             res = []
+            search_sites = []
+            if not sites or sites == "all":
+                search_sites = site_list
+            else:
+                try:
+                    for site in sites.split(","):
+                        if site in site_list:
+                            search_sites.append(site)
+                except Exception as e:
+                    print(e)
+                    search_sites = site_list
             with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
                 to_do = []
-                for site in sites:
+                for site in search_sites:
                     future = executor.submit(eval(f"{site}.searchContent"), wd)
                     to_do.append(future)
                 try:
-                    for future in concurrent.futures.as_completed(to_do, timeout=5):  # 并发执行
+                    for future in concurrent.futures.as_completed(to_do, timeout=5):  # 骞跺彂鎵ц
                         # print(future.result())
                         res.extend(future.result())
                 except Exception as e:
@@ -50,14 +63,14 @@ def vod():
                 "list": res
             })
 
-        # 详情
+        # 璇︽儏
         if ac and ids:
             vodList = eval(f"{ids.split('$')[0]}.detailContent")(ids)
             return jsonify({
                 "list": vodList
             })
 
-        # 播放
+        # 鎾斁
         if play and flag:
             playerContent = eval(f"{play.split('___')[0]}.playerContent")(play, flag)
             return playerContent
