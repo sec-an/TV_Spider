@@ -6,3 +6,4 @@ ddddocr
 requests
 aligo
 gunicorn
+websockets
