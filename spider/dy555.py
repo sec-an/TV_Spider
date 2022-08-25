@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import json
-import base64
+from utils import utils_dy555
 
 Tag = "dy555"
 siteUrl = "https://555dy.fun"
@@ -18,6 +18,13 @@ playerConfig = {
     },
     "duoduozy": {
         "show": "555蓝光",
+        "des": "",
+        "ps": "0",
+        "api": "https://zyz.sdljwomen.com/newduoduo/555tZ4pvzHE3BpiO838.php",
+        "parse": "https://zyz.sdljwomen.com/server_player/?url="
+    },
+    "ddzy": {
+        "show": "多多资源",
         "des": "",
         "ps": "0",
         "api": "https://zyz.sdljwomen.com/newduoduo/555tZ4pvzHE3BpiO838.php",
@@ -297,12 +304,22 @@ def playerContent(ids, flag, token):
     try:
         id = ids.split("___")[-1]
         url = f"{siteUrl}/vodplay/{id}.html"
-        return {
-            "header": "",
-            "parse": "1",
-            "playUrl": "",
-            "url": url
+        headers = {
+            "User-Agent": " Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36",
+            "origin": "https://player.sakurot.com:3458"
         }
+        allScript = BeautifulSoup(requests.get(url=url, headers=getHeaders("")).text, "html.parser").select("script")
+        for item in allScript:
+            scContent = item.get_text().strip()
+            if scContent.startswith("var player_"):
+                player = json.loads(scContent[scContent.find('{'):scContent.rfind('}') + 1])
+                if player.get("from") in playerConfig:
+                    return {
+                        "header": json.dumps(headers),
+                        "parse": 0,
+                        "playUrl": "",
+                        "url": utils_dy555.get_m3u8(player.get("url"))
+                    }
     except Exception as e:
         print(e)
     return {}
@@ -310,9 +327,9 @@ def playerContent(ids, flag, token):
 
 if __name__ == '__main__':
     # res = searchContent("壮志凌云", "")
-    # res = detailContent('555dy$359288', "")
+    res = detailContent('555dy$359288', "")
     # func = "playerContent"
-    res = playerContent("555dy___359288-1-1", "", "")
+    # res = playerContent("555dy___359288-1-1", "", "")
     # res = playerContent("555dy___359288-5-1", "", "")
     # res = eval(func)("68614-1-1")
     print(res)
