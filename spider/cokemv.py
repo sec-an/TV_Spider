@@ -59,7 +59,7 @@ def verifyCode(url):
         time.sleep(1)
 
 
-def searchContent(key):
+def searchContent(key, token):
     try:
         url = siteUrl + "/vodsearch/-------------.html?wd=" + quote_plus(key)
         session = verifyCode(url)
@@ -79,7 +79,7 @@ def searchContent(key):
     return []
 
 
-def detailContent(ids):
+def detailContent(ids, token):
     try:
         id = ids.split("$")[-1]
         url = f"{siteUrl}/voddetail/{id}.html"
@@ -149,7 +149,7 @@ def detailContent(ids):
     return []
 
 
-def playerContent(ids, flag):
+def playerContent(ids, flag, token):
     try:
         id = ids.split("___")[-1]
         headers = {}
