@@ -98,7 +98,7 @@ def getdetailContent(tag, url):
         if not file_id:
             file_id = fileinfo.file_id
         vodList = {
-            "vod_id": url,
+            "vod_id": f"{tag}${url}",
             "vod_name": share_info.share_name,
             "vod_pic": share_info.avatar,
             "vod_content": url,
