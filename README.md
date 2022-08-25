@@ -25,6 +25,7 @@ docker run --name TV --net="host" -v /opt/TV（源码所在目录）:/TV tv:late
 |`bttwoo`|[两个BT](https://www.bttwoo.com/)|
 |`cokemv`|[COKEMV影视](https://cokemv.me/)|
 |`czspp`|[厂长资源](https://czspp.com/)|
+|`dy555`|[555电影](https://555dy.fun/)|
 |`gitcafe`|[小纸条](https://u.gitcafe.net/)|
 |`libvio`|[LIBVIO影视](https://www.libvio.me/)|
 |`smdyy`|[神马影院](https://www.smdyy.cc/)|
