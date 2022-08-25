@@ -27,6 +27,7 @@ docker run --name TV --net="host" -v /opt/TV（源码所在目录）:/TV tv:late
 |`smdyy`|[神马影院](https://www.smdyy.cc/)|
 |`voflix`|[VOFLIX HD](https://www.voflix.com/)|
 |`yiso`|[易搜-网盘搜索](https://yiso.fun/)|
+|`zhaoziyuan`|[找资源](https://zhaoziyuan.me/)|
 ## 在json中调用
 ```
 {
