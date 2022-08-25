@@ -10,8 +10,10 @@ Tag = "zhaoziyuan"
 siteUrl = "https://zhaoziyuan.me"
 
 
-def searchContent(key):
+def searchContent(key, token):
     try:
+        if not token:
+            return []
         url = siteUrl + "/so?filename=" + quote_plus(key)
         searchResult = BeautifulSoup(requests.get(url).text, "html.parser")
         lists = searchResult.select("div.li_con div.news_text")
@@ -37,25 +39,29 @@ def searchContent(key):
     return []
 
 
-def detailContent(url):
+def detailContent(url, token):
     try:
+        if not token:
+            return []
         aliyun = re.compile("(https://www.aliyundrive.com/s/[^\"]+)")
         share_url = url.strip().split("$")[-1]
         if aliyun.search(share_url):
-            return ali.getdetailContent(Tag, share_url)
+            return ali.getdetailContent(Tag, share_url, token)
         matcher = aliyun.search(requests.get("https://zhaoziyuan.me/" + share_url).text)
         if not matcher:
             return []
-        return ali.getdetailContent(Tag, matcher.group(1))
+        return ali.getdetailContent(Tag, matcher.group(1), token)
     except Exception as e:
         print(e)
     return []
 
 
-def playerContent(ids, flag):
+def playerContent(ids, flag, token):
     try:
+        if not token:
+            return {}
         id = ids.split("___")[-1]
-        return ali.getplayerContent(id, flag)
+        return ali.getplayerContent(id, flag, token)
     except Exception as e:
         print(e)
     return {}
