@@ -101,9 +101,9 @@ def detailContent(ids, token):
             "vod_id": f'{Tag}${id}',
             "vod_name": sourcediv[0].select_one("div.module-item-pic>img")["alt"],
             "vod_pic": sourcediv[0].select_one("div.module-item-pic>img")["data-original"],
-            "type_name": data[2].a.get_text(),
+            "type_name": ",".join(item.get_text() for item in data[2].select("a")),
             "vod_year": data[0].a.get_text(),
-            "vod_area": data[1].a.get_text(),
+            "vod_area": ",".join(item.get_text() for item in data[1].select("a")),
             "vod_remarks": doc.select("div.module-info-item-content")[4].get_text(),
             "vod_actor": actor,
             "vod_director": director,
@@ -179,8 +179,8 @@ def playerContent(ids, flag, token):
 
 
 if __name__ == '__main__':
-    res = searchContent("壮志凌云")
-    # res = detailContent(40486)
+    res = searchContent("神探大战", "")
+    res = detailContent('cokemv$40555', "")
     # func = "playerContent"
     # res = playerContent("40542-1-1")
     # res = eval(func)("68614-1-1")
