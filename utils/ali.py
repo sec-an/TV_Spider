@@ -3,14 +3,66 @@ import requests
 from aligo import *
 import re
 import json
+import threading
+import inspect
+import ctypes
 
-Token = ""
-ali = Aligo(refresh_token=Token)
+
+ali = ""
+
+
+def _async_raise(tid, exctype):
+    """raises the exception, performs cleanup if needed"""
+    tid = ctypes.c_long(tid)
+    if not inspect.isclass(exctype):
+        exctype = type(exctype)
+    res = ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, ctypes.py_object(exctype))
+    if res == 0:
+        raise ValueError("invalid thread id")
+    elif res != 1:
+        # """if it returns a number greater than one, you're in trouble,
+        # and you should call it again with exc=NULL to revert the effect"""
+        ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, None)
+        raise SystemError("PyThreadState_SetAsyncExc failed")
+
+
+def stop_thread(thread):
+    _async_raise(thread.ident, SystemExit)
+
+
+class ali_login(threading.Thread):
+    def __init__(self, token):
+        threading.Thread.__init__(self)
+        self.token = token
+
+    def run(self):
+        self._return = Aligo(refresh_token=self.token)
+
+    def join(self):
+        super().join(timeout=3)
+        return self._return
+
+
+def login(token):
+    try:
+        login_thread = ali_login(token)
+        login_thread.daemon = True
+        login_thread.start()
+        ali = login_thread.join()
+        return ali
+    except Exception as e:
+        if login_thread.is_alive():
+            stop_thread(login_thread)
+        print(e)
+        return ""
+
+
 Folder = re.compile("www.aliyundrive.com/s/([^/]+)(/folder/([^/]+))?")
 
 
 def get_file_list(file_list, share_id, share_token, file_id):
     try:
+        global ali
         body = GetShareFileListRequest(
             share_id=share_id,
             all=True,
@@ -42,6 +94,7 @@ def get_file_list(file_list, share_id, share_token, file_id):
 
 def getpreviewUrl(share_id, share_token, file_id):
     try:
+        global ali
         url = "https://api.aliyundrive.com/v2/file/get_share_link_video_preview_play_info"
         data = {
             "share_id": share_id,
@@ -70,17 +123,25 @@ def getpreviewUrl(share_id, share_token, file_id):
 
 
 def getdownloadUrl(share_id, share_token, file_id, category):
-    body = GetShareLinkDownloadUrlRequest(
-        share_id=share_id,
-        file_id=file_id
-    )
-    if category == "audio":
-        body.get_audio_play_info = True
-    return ali.get_share_link_download_url(body=body, share_token=share_token)
-
-
-def getdetailContent(tag, url):
     try:
+        global ali
+        body = GetShareLinkDownloadUrlRequest(
+            share_id=share_id,
+            file_id=file_id
+        )
+        if category == "audio":
+            body.get_audio_play_info = True
+        return ali.get_share_link_download_url(body=body, share_token=share_token)
+    except Exception as e:
+        print(e)
+    return ""
+
+
+def getdetailContent(tag, url, token):
+    try:
+        global ali
+        if ali == "":
+            ali = login(token)
         pattern = Folder
         matcher = pattern.search(url)
         if not matcher:
@@ -122,8 +183,11 @@ def getdetailContent(tag, url):
     return []
 
 
-def getplayerContent(id, flag):
+def getplayerContent(id, flag, token):
     try:
+        global ali
+        if ali == "":
+            ali = login(token)
         split = id.split("__")
         headers = {
             "User-Agent": " Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36",
