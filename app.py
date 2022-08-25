@@ -9,6 +9,7 @@ cors = CORS(app)
 
 
 site_list = [
+    "bttwoo",
     "cokemv",
     "czspp",
     "gitcafe",
