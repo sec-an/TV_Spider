@@ -2,6 +2,7 @@
 from urllib.parse import urlencode
 import requests
 from utils import ali
+import re
 
 Tag = "gitcafe"
 siteUrl = "https://gitcafe.net"
@@ -40,8 +41,13 @@ def detailContent(url, token):
     try:
         if not token:
             return []
-        share_url = "https://www.aliyundrive.com/s/" + url.strip().split("$")[-1]
-        return ali.getdetailContent(Tag, share_url, token)
+        aliyun = re.compile("(https://www.aliyundrive.com/s/[^\"]+)")
+        share_url = url.strip().split("$")[-1]
+        if aliyun.search(share_url):
+            return ali.getdetailContent(Tag, share_url, token)
+        else:
+            share_url = "https://www.aliyundrive.com/s/" + url.strip().split("$")[-1]
+            return ali.getdetailContent(Tag, share_url, token)
     except Exception as e:
         print(e)
     return []
