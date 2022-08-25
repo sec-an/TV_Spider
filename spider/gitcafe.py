@@ -7,8 +7,10 @@ Tag = "gitcafe"
 siteUrl = "https://gitcafe.net"
 
 
-def searchContent(key):
+def searchContent(key, token):
     try:
+        if not token:
+            return []
         url = siteUrl + "/tool/alipaper/"
         data = {
             "action": "search",
@@ -34,19 +36,23 @@ def searchContent(key):
     return []
 
 
-def detailContent(url):
+def detailContent(url, token):
     try:
+        if not token:
+            return []
         share_url = "https://www.aliyundrive.com/s/" + url.strip().split("$")[-1]
-        return ali.getdetailContent(Tag, share_url)
+        return ali.getdetailContent(Tag, share_url, token)
     except Exception as e:
         print(e)
     return []
 
 
-def playerContent(ids, flag):
+def playerContent(ids, flag, token):
     try:
+        if not token:
+            return {}
         id = ids.split("___")[-1]
-        return ali.getplayerContent(id, flag)
+        return ali.getplayerContent(id, flag, token)
     except Exception as e:
         print(e)
     return {}
