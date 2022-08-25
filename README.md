@@ -37,8 +37,11 @@ docker run --name TV --net="host" -v /opt/TV（源码所在目录）:/TV tv:late
     "name":"T4测试",
     "type":4,
     // 参数sites可筛选站点，tag用,隔开，不加或sites=all为搜索所有支持的站点
-    "api":"http://127.0.0.1:8080/vod?sites=all",
+    // 参数ali_token提供阿里系的搜索播放功能（非必须）
+    "api":"http://127.0.0.1:8080/vod?sites=all&ali_token=3xx9cfxxxx509bxx",
+    // "api":"http://127.0.0.1:8080/vod",
     // "api":"http://127.0.0.1:8080/vod?sites=czspp,yiso",
+    // "api":"http://127.0.0.1:8080/vod?ali_token=3xx9cfxxxx509bxx",
     "searchable":1,
     "quickSearch":1,
     "filterable":0
@@ -48,8 +51,6 @@ docker run --name TV --net="host" -v /opt/TV（源码所在目录）:/TV tv:late
 ```pip install -r requirements.txt```
 ## 并发搜索超时设置（单位：秒）
 https://github.com/sec-an/TV_Spider/blob/1a1a5e5c5b64091e23ac7d8ab510103d98675d6f/app.py#L57
-## 阿里云盘token修改
-https://github.com/sec-an/TV_Spider/blob/1a1a5e5c5b64091e23ac7d8ab510103d98675d6f/utils/ali.py#L7
 ## 运行
 ```gunicorn -w 4 -b 0.0.0.0:8080 app:app```
 
