@@ -50,7 +50,7 @@ def getHeaders(url):
     return headers
 
 
-def searchContent(key):
+def searchContent(key, token):
     try:
         url = siteUrl + "/search/-------------.html?wd=" + quote_plus(key) + "&submit="
         searchResult = BeautifulSoup(requests.get(
@@ -74,7 +74,7 @@ def searchContent(key):
     return []
 
 
-def detailContent(ids):
+def detailContent(ids, token):
     try:
         id = ids.split("$")[-1]
         url = f"{siteUrl}/detail/{id}.html"
@@ -133,7 +133,7 @@ def detailContent(ids):
     return []
 
 
-def playerContent(ids, flag):
+def playerContent(ids, flag, token):
     try:
         id = ids.split("___")[-1]
         headers = {}
