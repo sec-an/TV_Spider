@@ -36,6 +36,9 @@ def vod():
         q = request.args.get('q')
 
         sites = request.args.get('sites')
+        ali_token = request.args.get('ali_token')
+        if not ali_token:
+            ali_token = ""
 
         # 站点筛选
         search_sites = []
@@ -56,7 +59,7 @@ def vod():
             with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
                 to_do = []
                 for site in search_sites:
-                    future = executor.submit(eval(f"{site}.searchContent"), wd)
+                    future = executor.submit(eval(f"{site}.searchContent"), wd, ali_token)
                     to_do.append(future)
                 try:
                     for future in concurrent.futures.as_completed(to_do, timeout=5):  # 并发执行
@@ -70,14 +73,14 @@ def vod():
 
         # 详情
         if ac and ids:
-            vodList = eval(f"{ids.split('$')[0]}.detailContent")(ids)
+            vodList = eval(f"{ids.split('$')[0]}.detailContent")(ids, ali_token)
             return jsonify({
                 "list": vodList
             })
 
         # 播放
         if play and flag:
-            playerContent = eval(f"{play.split('___')[0]}.playerContent")(play, flag)
+            playerContent = eval(f"{play.split('___')[0]}.playerContent")(play, flag, ali_token)
             return playerContent
 
         return jsonify({
