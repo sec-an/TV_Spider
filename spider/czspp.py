@@ -50,26 +50,28 @@ def get_item(item, tag):
     return ",".join(data)
 
 
-def searchContent(key):
+def searchContent(key, token):
     try:
         url = siteUrl + "/xssearch?q=" + quote_plus(key)
         jS = BeautifulSoup(requests.get(url=url, headers=getHeaders()).text, "html.parser")
         videos = []
         lists = jS.select("div.mi_ne_kd > ul > li")
         for vod in lists:
-            videos.append({
-                "vod_id": f'{Tag}${vod.a["href"].split("/")[-1].split(".")[0]}',
-                "vod_name": vod.h3.a.get_text().strip(),
-                "vod_pic": vod.img["data-original"],
-                "vod_remarks": Tag + " " + vod.span.get_text()
-            })
+            name = vod.h3.a.get_text().strip()
+            if key in name:
+                videos.append({
+                    "vod_id": f'{Tag}${vod.a["href"].split("/")[-1].split(".")[0]}',
+                    "vod_name": name,
+                    "vod_pic": vod.img["data-original"],
+                    "vod_remarks": Tag + " " + vod.span.get_text()
+                })
         return videos
     except Exception as e:
         print(e)
     return []
 
 
-def detailContent(ids):
+def detailContent(ids, token):
     try:
         id = ids.split("$")[-1]
         url = f"{siteUrl}/movie/{id}.html"
@@ -128,7 +130,7 @@ def detailContent(ids):
     return []
 
 
-def playerContent(ids, flag):
+def playerContent(ids, flag, token):
     try:
         id = ids.split("___")[-1]
         url = f"{siteUrl}/v_play/{id}.html"
