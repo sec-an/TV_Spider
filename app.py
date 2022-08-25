@@ -15,7 +15,8 @@ site_list = [
     "libvio",
     "smdyy",
     "voflix",
-    "yiso"
+    "yiso",
+    "zhaoziyuan"
 ]
 
 
@@ -36,20 +37,22 @@ def vod():
 
         sites = request.args.get('sites')
 
+        # 站点筛选
+        search_sites = []
+        if not sites or sites == "all":
+            search_sites = site_list
+        else:
+            try:
+                for site in sites.split(","):
+                    if site in site_list:
+                        search_sites.append(site)
+            except Exception as e:
+                print(e)
+                search_sites = site_list
+
         # 搜索
         if wd:
             res = []
-            search_sites = []
-            if not sites or sites == "all":
-                search_sites = site_list
-            else:
-                try:
-                    for site in sites.split(","):
-                        if site in site_list:
-                            search_sites.append(site)
-                except Exception as e:
-                    print(e)
-                    search_sites = site_list
             with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
                 to_do = []
                 for site in search_sites:
@@ -78,7 +81,7 @@ def vod():
             return playerContent
 
         return jsonify({
-            "list": []
+            "list": search_sites
         })
     except Exception as e:
         print(e)
