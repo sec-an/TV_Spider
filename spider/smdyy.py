@@ -49,7 +49,7 @@ def getHeaders(url):
     return headers
 
 
-def searchContent(key):
+def searchContent(key, token):
     try:
         currentTime = str(int(round(time.time() * 1000)))
         limit = 10
@@ -75,7 +75,7 @@ def searchContent(key):
     return []
 
 
-def detailContent(ids):
+def detailContent(ids, token):
     try:
         id = ids.split("$")[-1]
         url = f"{siteUrl}/kan/{id}.html"
@@ -137,7 +137,7 @@ def detailContent(ids):
     return []
 
 
-def playerContent(ids, flag):
+def playerContent(ids, flag, token):
     try:
         id = ids.split("___")[-1]
         headers = {}
