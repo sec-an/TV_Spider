@@ -25,6 +25,8 @@ docker run --name TV --net="host" -v /opt/TV（源码所在目录）:/TV tv:late
 
 运行脚本，完成安装。
 
+一键安装命令：
+
 wget --no-check-certificate -qO- "https://raw.githubusercontent.com/sec-an/TV_Spider/main/T4update.sh" -O '/tmp/T4update.sh' && chmod +x /tmp/T4update.sh && bash /tmp/T4update.sh && rm /tmp/T4update.sh
 
 [使用宝塔安装的简略步骤](https://github.com/sec-an/TV_Spider/blob/main/doc/install_through_btpanel.md)
