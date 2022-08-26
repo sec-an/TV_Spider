@@ -30,6 +30,7 @@ docker run --name TV --net="host" -v /opt/TV（源码所在目录）:/TV tv:late
 |`dy555`|[555电影](https://555dy.fun/)|
 |`gitcafe`|[小纸条](https://u.gitcafe.net/)|
 |`libvio`|[LIBVIO影视](https://www.libvio.me/)|
+|`onelist`|[Onelist](https://onelist.top/)|
 |`smdyy`|[神马影院](https://www.smdyy.cc/)|
 |`voflix`|[VOFLIX HD](https://www.voflix.com/)|
 |`yiso`|[易搜-网盘搜索](https://yiso.fun/)|
