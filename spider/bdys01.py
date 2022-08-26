@@ -3,33 +3,11 @@ import time
 from urllib.parse import quote_plus
 import requests
 from bs4 import BeautifulSoup
-import re
-import json
 import ddddocr
 
 
 Tag = "bdys01"
 siteUrl = "https://www.bdys01.com"
-playerConfig = {
-    "cokemv0555": {"sh": "COKEMV", "pu": "", "sn": 0, "or": 999},
-    "cokeqie01": {"sh": "極速路線", "pu": "", "sn": 0, "or": 999},
-    "xin": {"sh": "高速路線", "pu": "", "sn": 0, "or": 999},
-    "90mm": {"sh": "藍光號路", "pu": "", "sn": 0, "or": 999},
-    "age01": {"sh": "動漫一線", "pu": "", "sn": 0, "or": 999},
-    "age02": {"sh": "動漫二線", "pu": "", "sn": 0, "or": 999},
-    "mahua": {"sh": "海外(禁國內)", "pu": "", "sn": 0, "or": 999},
-    "toutiao": {"sh": "蓝光不卡", "pu": "", "sn": 0, "or": 999}
-}
-
-
-def Regex(pattern, content):
-    try:
-        matcher = re.findall(pattern, content)
-        if matcher:
-            return matcher[0]
-    except Exception as e:
-        print(e)
-    return ""
 
 
 def getHeaders(url):
