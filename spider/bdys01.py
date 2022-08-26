@@ -76,8 +76,8 @@ def verifyCode(key):
             url=f"https://www.bdys01.com/search/verifyCode?t={str(int(round(time.time() * 1000)))}",
             headers=getHeaders(siteUrl)
         ).content
-        with open("verifyCode.jpg", 'wb') as f:
-            f.write(img)
+        # with open("verifyCode.jpg", 'wb') as f:
+        #     f.write(img)
         code = cacu(ocr.classification(img))
         url = f"{siteUrl}/search/{quote_plus(key)}?code={code}"
         res = session.get(
