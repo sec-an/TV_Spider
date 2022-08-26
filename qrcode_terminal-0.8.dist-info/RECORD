@@ -1,0 +1,11 @@
+../../bin/qrcode-terminal-py,sha256=XoF5ZDQDma8aijKKTvUBQsmtWuntfdN38TgcrTbwKyE,238
+qrcode_terminal-0.8.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+qrcode_terminal-0.8.dist-info/METADATA,sha256=W7bzGpJT3vqm5f0T9U3RHBQGQuSp_tte0PGtmtlXD3U,274
+qrcode_terminal-0.8.dist-info/RECORD,,
+qrcode_terminal-0.8.dist-info/WHEEL,sha256=OqRkF0eY5GHssMorFjlbTIq072vpHpF60fIQA6lS9xA,92
+qrcode_terminal-0.8.dist-info/entry_points.txt,sha256=P4Z9_V2ZZembnH3k2u4mOevh6o9IGHrq4bIUZ6wJu7E,81
+qrcode_terminal-0.8.dist-info/top_level.txt,sha256=ds2_9q9hRGsgB9jWkGyi8PwLx_C9oRradE1syGNCdBs,16
+qrcode_terminal/__init__.py,sha256=YckHJZOmrMqa6Vnbt1i-BhWXJJ3yw2n6oc8roalxLS8,179
+qrcode_terminal/__pycache__/__init__.cpython-37.pyc,,
+qrcode_terminal/__pycache__/qrcode_terminal.cpython-37.pyc,,
+qrcode_terminal/qrcode_terminal.py,sha256=ZdZhkEyFJmGRCYeEko8zVN5kcLfB40iYD82thTn1Puw,1617

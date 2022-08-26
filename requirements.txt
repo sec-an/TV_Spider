@@ -3,7 +3,4 @@ flask-cors
 pycryptodome
 beautifulsoup4
 ddddocr
-requests
-aligo
-gunicorn
 websockets

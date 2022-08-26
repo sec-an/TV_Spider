@@ -1,0 +1,2 @@
+#!/bin/bash
+/var/lang/python37/bin/python3 -u app.py

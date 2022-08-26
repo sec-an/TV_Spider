@@ -72,7 +72,7 @@ def playerContent(ids, flag, token):
 
 
 if __name__ == '__main__':
-    res = searchContent("冰雨火")
-    res = detailContent('zhaoziyuan$YoboboO1vFY81')
+    res = searchContent("冰雨火", "")
+    res = detailContent('zhaoziyuan$YoboboO1vFY81', "", "")
 
     print(res)
