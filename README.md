@@ -22,6 +22,7 @@ docker run --name TV --net="host" -v /opt/TV（源码所在目录）:/TV tv:late
 ## 当前支持的站点（站点根域名字典序）
 |Tag|Name|
 | :----: | :----: |
+|`bdys01`|[哔滴影视](https://www.bttwoo.com/)|
 |`bttwoo`|[两个BT](https://www.bttwoo.com/)|
 |`cokemv`|[COKEMV影视](https://cokemv.me/)|
 |`czspp`|[厂长资源](https://czspp.com/)|
@@ -40,7 +41,8 @@ docker run --name TV --net="host" -v /opt/TV（源码所在目录）:/TV tv:late
     "type":4,
     // 参数sites可筛选站点，tag用,隔开，不加或sites=all为搜索所有支持的站点
     // 参数ali_token提供阿里系的搜索播放功能（非必须）
-    "api":"http://127.0.0.1:8080/vod?sites=all&ali_token=3xx9cfxxxx509bxx",
+    // 参数timeout提供聚合搜索限时返回结果功能，超时数据不再等待，默认5秒
+    "api":"http://127.0.0.1:8080/vod?sites=all&ali_token=3xx9cfxxxx509bxx&timeout=5",
     // "api":"http://127.0.0.1:8080/vod",
     // "api":"http://127.0.0.1:8080/vod?sites=czspp,yiso",
     // "api":"http://127.0.0.1:8080/vod?ali_token=3xx9cfxxxx509bxx",
