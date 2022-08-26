@@ -5,7 +5,8 @@
 
 ### `没有修改填写阿里云盘token的暂时可能跑不了！！！`
 
-[Docker安装步骤]
+安装方法：
+1、[Docker安装步骤]
 
 创建镜像：
 
@@ -19,16 +20,22 @@ docker run --name TV --net="host" -v /opt/TV（源码所在目录）:/TV tv:late
 
 注意：需要提前安装unzip。openwrt：opkg update && opkg install unzip。ubuntu、debian：apt-get update && apt-get install unzip。其他系统自行百度。
 
+
+2、自定义脚本安装--Docker
 下载T4update.sh脚本到任意目录，赋予执行权限。如果有需要自定义内容，请进入脚本在响应位置自行修改。
 
 ![T4update说明](https://raw.githubusercontent.com/lm317379829/TV-Spider/main/pic/T4update%E8%AF%B4%E6%98%8E.jpg)
 
 运行脚本，完成安装。
 
+
+3、一键安装--Docker
 一键安装命令：
 
 wget --no-check-certificate -qO- "https://raw.githubusercontent.com/sec-an/TV_Spider/main/T4update.sh" -O '/tmp/T4update.sh' && chmod +x /tmp/T4update.sh && bash /tmp/T4update.sh && rm /tmp/T4update.sh
 
+
+4、使用宝塔安装
 [使用宝塔安装的简略步骤](https://github.com/sec-an/TV_Spider/blob/main/doc/install_through_btpanel.md)
 ### `仅供Python爬虫学习交流使用！切勿用于违法用途，否则开发者不承担任何责任。`
 ### `欢迎Star 欢迎PR`
