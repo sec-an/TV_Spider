@@ -6,6 +6,10 @@ import json
 import threading
 import inspect
 import ctypes
+import urllib3
+
+
+urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != 'total' else None
 
 
 ali = ""

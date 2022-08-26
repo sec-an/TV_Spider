@@ -5,6 +5,10 @@ from bs4 import BeautifulSoup
 import re
 import base64
 from Crypto.Cipher import AES
+import urllib3
+
+
+urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != 'total' else None
 
 
 Tag = "bttwoo"

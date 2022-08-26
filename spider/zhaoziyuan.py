@@ -4,6 +4,10 @@ import requests
 from utils import ali
 from bs4 import BeautifulSoup
 import re
+import urllib3
+
+
+urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != 'total' else None
 
 
 Tag = "zhaoziyuan"

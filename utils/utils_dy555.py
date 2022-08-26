@@ -6,6 +6,10 @@ from hashlib import sha256
 
 from Crypto.Cipher import AES
 from websockets import connect
+import urllib3
+
+
+urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != 'total' else None
 
 KEY = b"55ca5c48a943afdc"
 IV = b"d11424dcecfe16c0"

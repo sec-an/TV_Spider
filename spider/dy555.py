@@ -6,6 +6,10 @@ from bs4 import BeautifulSoup
 import re
 import json
 from utils import utils_dy555
+import urllib3
+
+
+urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != 'total' else None
 
 Tag = "dy555"
 siteUrl = "https://555dy.fun"

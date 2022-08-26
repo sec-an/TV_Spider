@@ -6,6 +6,10 @@ from bs4 import BeautifulSoup
 import re
 import json
 import base64
+import urllib3
+
+
+urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != 'total' else None
 
 
 Tag = "voflix"
