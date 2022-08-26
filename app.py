@@ -9,6 +9,7 @@ cors = CORS(app)
 
 
 site_list = [
+    "bdys01",
     "bttwoo",
     "cokemv",
     "czspp",
@@ -39,6 +40,11 @@ def vod():
 
         sites = request.args.get('sites')
         ali_token = request.args.get('ali_token')
+        try:
+            timeout = int(request.args.get('timeout'))
+        except Exception as e:
+            timeout = 5
+
         if not ali_token:
             ali_token = ""
 
@@ -58,13 +64,13 @@ def vod():
         # 搜索
         if wd:
             res = []
-            with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=len(search_sites)) as executor:
                 to_do = []
                 for site in search_sites:
                     future = executor.submit(eval(f"{site}.searchContent"), wd, ali_token)
                     to_do.append(future)
                 try:
-                    for future in concurrent.futures.as_completed(to_do, timeout=5):  # 并发执行
+                    for future in concurrent.futures.as_completed(to_do, timeout=timeout):  # 并发执行
                         # print(future.result())
                         res.extend(future.result())
                 except Exception as e:
