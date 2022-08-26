@@ -73,11 +73,14 @@ def vod():
                     for future in concurrent.futures.as_completed(to_do, timeout=timeout):  # 并发执行
                         # print(future.result())
                         res.extend(future.result())
+                    return jsonify({
+                        "list": res
+                    })
                 except Exception as e:
                     print(e)
-            return jsonify({
-                "list": res
-            })
+                    return jsonify({
+                        "list": res
+                    })
 
         # 详情
         if ac and ids:
