@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-from urllib.parse import quote_plus
+from urllib.parse import quote_plus, quote
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -205,12 +205,16 @@ def playerContent(ids, flag, token):
                 matcher11 = Q.search(text)
                 if matcher11:
                     str3 = matcher11.group(1)
-        return {
+        result = {
             "header": "",
             "parse": "0",
             "playUrl": "",
             "url": str3
         }
+        if str4:
+            result["subf"] = "/vtt/utf-8"
+            result["subt"] = quote(str4)
+        return result
     except Exception as e:
         print(e)
     return {}

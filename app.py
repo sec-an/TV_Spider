@@ -13,6 +13,7 @@ site_list = [
     "bttwoo",
     "cokemv",
     "czspp",
+    "ddys",
     "dy555",
     "gitcafe",
     "libvio",

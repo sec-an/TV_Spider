@@ -174,16 +174,6 @@ playerConfig = {
 }
 
 
-def Regex(pattern, content):
-    try:
-        matcher = re.findall(pattern, content)
-        if matcher:
-            return matcher[0]
-    except Exception as e:
-        print(e)
-    return ""
-
-
 def getHeaders(url):
     headers = {}
     headers.setdefault("method", "GET")
