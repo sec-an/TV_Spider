@@ -35,7 +35,7 @@ wget --no-check-certificate -qO- "https://raw.githubusercontent.com/sec-an/TV_Sp
 ## 当前支持的站点（站点根域名字典序）
 |Tag|Name|
 | :----: | :----: |
-|`bdys01`|[哔滴影视](https://www.bttwoo.com/)|
+|`bdys01`|[哔滴影视](https://www.bdys01.com)|
 |`bttwoo`|[两个BT](https://www.bttwoo.com/)|
 |`cokemv`|[COKEMV影视](https://cokemv.me/)|
 |`czspp`|[厂长资源](https://czspp.com/)|
