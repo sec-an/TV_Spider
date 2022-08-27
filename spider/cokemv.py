@@ -50,17 +50,19 @@ def getHeaders(url):
 
 def verifyCode(url):
     while True:
-        session = requests.session()
-        ocr = ddddocr.DdddOcr()
-        img = session.get(url="https://cokemv.me/index.php/verify/index.html?", headers=getHeaders(url)).content
-        code = ocr.classification(img)
-        res = session.post(
-            url=f"https://cokemv.me/index.php/ajax/verify_check?type=search&verify={code}",
-            headers=getHeaders(url)
-        ).json()
-        if res["msg"] == "ok":
-            return session
-        time.sleep(1)
+        try:
+            session = requests.session()
+            ocr = ddddocr.DdddOcr()
+            img = session.get(url="https://cokemv.me/index.php/verify/index.html?", headers=getHeaders(url)).content
+            code = ocr.classification(img)
+            res = session.post(
+                url=f"https://cokemv.me/index.php/ajax/verify_check?type=search&verify={code}",
+                headers=getHeaders(url)
+            ).json()
+            if res["msg"] == "ok":
+                return session
+        except Exception as e:
+            print(e)
 
 
 def searchContent(key, token):
