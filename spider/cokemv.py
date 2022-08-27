@@ -49,7 +49,8 @@ def getHeaders(url):
 
 
 def verifyCode(url):
-    while True:
+    retry = 5
+    while retry:
         try:
             session = requests.session()
             ocr = ddddocr.DdddOcr()
@@ -63,6 +64,8 @@ def verifyCode(url):
                 return session
         except Exception as e:
             print(e)
+        finally:
+            retry = retry - 1
 
 
 def searchContent(key, token):

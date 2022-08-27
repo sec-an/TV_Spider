@@ -51,7 +51,8 @@ def cacu(code):
 
 
 def verifyCode(key):
-    while True:
+    retry = 5
+    while retry:
         try:
             session = requests.session()
             ocr = ddddocr.DdddOcr()
@@ -72,6 +73,8 @@ def verifyCode(key):
             # time.sleep(1)
         except Exception as e:
             print(e)
+        finally:
+            retry = retry - 1
 
 def searchContent(key, token):
     try:
