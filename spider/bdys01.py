@@ -52,24 +52,26 @@ def cacu(code):
 
 def verifyCode(key):
     while True:
-        session = requests.session()
-        ocr = ddddocr.DdddOcr()
-        img = session.get(
-            url=f"https://www.bdys01.com/search/verifyCode?t={str(int(round(time.time() * 1000)))}",
-            headers=getHeaders(siteUrl)
-        ).content
-        # with open("verifyCode.jpg", 'wb') as f:
-        #     f.write(img)
-        code = cacu(ocr.classification(img))
-        url = f"{siteUrl}/search/{quote_plus(key)}?code={code}"
-        res = session.get(
-            url=url,
-            headers=getHeaders(url.split("?")[0])
-        ).text
-        if "/search/verifyCode?t=" not in res:
-            return res
-        time.sleep(1)
-
+        try:
+            session = requests.session()
+            ocr = ddddocr.DdddOcr()
+            img = session.get(
+                url=f"https://www.bdys01.com/search/verifyCode?t={str(int(round(time.time() * 1000)))}",
+                headers=getHeaders(siteUrl)
+            ).content
+            # with open("verifyCode.jpg", 'wb') as f:
+            #     f.write(img)
+            code = cacu(ocr.classification(img))
+            url = f"{siteUrl}/search/{quote_plus(key)}?code={code}"
+            res = session.get(
+                url=url,
+                headers=getHeaders(url.split("?")[0])
+            ).text
+            if "/search/verifyCode?t=" not in res:
+                return res
+            # time.sleep(1)
+        except Exception as e:
+            print(e)
 
 def searchContent(key, token):
     try:
