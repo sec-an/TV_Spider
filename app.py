@@ -1,12 +1,13 @@
 # -*- coding:utf-8 -*-
 from spider import *
+from utils import douban
 from flask import Flask, abort, request, jsonify
 from flask_cors import CORS
 import concurrent.futures
+import json
 
 app = Flask(__name__)
 cors = CORS(app)
-
 
 site_list = [
     "bdys01",
@@ -23,6 +24,9 @@ site_list = [
     "yiso",
     "zhaoziyuan"
 ]
+
+with open('./json/douban.json', "r", encoding="utf-8") as f:
+    douban_filter = json.load(f)
 
 
 @app.route('/vod')
@@ -63,6 +67,10 @@ def vod():
                 print(e)
                 search_sites = site_list
 
+        # 分类数据
+        if filter == "true" and t:
+            return douban.cate_filter(t, ext, pg)
+
         # 搜索
         if wd:
             res = []
@@ -96,9 +104,13 @@ def vod():
             playerContent = eval(f"{play.split('___')[0]}.playerContent")(play, flag, ali_token)
             return playerContent
 
-        return jsonify({
-            "list": search_sites
-        })
+
+        douban_filter["list"] = douban.subject_real_time_hotest()
+        return jsonify(douban_filter)
+
+        # return jsonify({
+        #     "list": search_sites
+        # })
     except Exception as e:
         print(e)
         return jsonify({
@@ -112,4 +124,4 @@ def hello_world():  # put application's code here
 
 
 if __name__ == '__main__':
-   app.run(host='0.0.0.0',port=9000)
+    app.run(host='0.0.0.0',port=9000)
