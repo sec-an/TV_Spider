@@ -20,6 +20,7 @@ site_list = [
     "libvio",
     "onelist",
     "smdyy",
+    "sp360",
     "voflix",
     "yiso",
     "zhaoziyuan"
