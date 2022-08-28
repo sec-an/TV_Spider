@@ -14,6 +14,7 @@ urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != '
 
 
 Tag = "ddys"
+Tag_name = "低端影视"
 siteUrl = "https://ddys.tv"
 
 
@@ -73,7 +74,7 @@ def searchContent(key, token):
                     "vod_id": f'{Tag}${id}',
                     "vod_name": name,
                     "vod_pic": vod_pic,
-                    "vod_remarks": Tag + " " + remark
+                    "vod_remarks": Tag_name + " " + remark
                 })
         return videos
     except Exception as e:

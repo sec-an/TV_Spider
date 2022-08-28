@@ -13,6 +13,7 @@ urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != '
 
 
 Tag = "cokemv"
+Tag_name = "COKEMV影视"
 siteUrl = "https://cokemv.me"
 playerConfig = {
     "cokemv0555": {"sh": "COKEMV", "pu": "", "sn": 0, "or": 999},
@@ -80,7 +81,7 @@ def searchContent(key, token):
                 "vod_id": f'{Tag}${vod.a["href"].split("/")[-1].split(".")[0]}',
                 "vod_name": vod.strong.get_text().strip(),
                 "vod_pic": vod.img["data-original"],
-                "vod_remarks": Tag + " " + vod.select_one(".module-item-note").get_text()
+                "vod_remarks": Tag_name + " " + vod.select_one(".module-item-note").get_text()
             })
         return videos
     except Exception as e:

@@ -11,6 +11,7 @@ urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != '
 
 
 Tag = "zhaoziyuan"
+Tag_name = "找资源"
 siteUrl = "https://zhaoziyuan.me"
 
 
@@ -35,7 +36,7 @@ def searchContent(key, token):
                         "vod_id": f'{Tag}${matcher.group(1)}',
                         "vod_name": sourceName,
                         "vod_pic": "https://inews.gtimg.com/newsapp_bt/0/13263837859/1000",
-                        "vod_remarks": Tag + " " + vod.select_one("div.news_text a p").get_text()
+                        "vod_remarks": Tag_name + " " + vod.select_one("div.news_text a p").get_text()
                     })
         return videos
     except Exception as e:
@@ -72,7 +73,7 @@ def playerContent(ids, flag, token):
 
 
 if __name__ == '__main__':
-    res = searchContent("冰雨火", "")
-    res = detailContent('zhaoziyuan$YoboboO1vFY81', "", "")
+    res = searchContent("冰雨火")
+    res = detailContent('zhaoziyuan$YoboboO1vFY81')
 
     print(res)

@@ -9,6 +9,7 @@ urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != '
 
 
 Tag = "yiso"
+Tag_name = "易搜"
 siteUrl = "https://yiso.fun"
 
 
@@ -32,7 +33,7 @@ def searchContent(key, token):
                 "vod_id": f'{Tag}${vod["url"]}',
                 "vod_name": vod["fileInfos"][0]["fileName"],
                 "vod_pic": "https://inews.gtimg.com/newsapp_bt/0/13263837859/1000",
-                "vod_remarks": Tag + " " + vod['gmtCreate']
+                "vod_remarks": Tag_name + " " + vod['gmtCreate']
             })
         return videos
     except Exception as e:

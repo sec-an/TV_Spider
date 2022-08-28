@@ -9,6 +9,7 @@ import urllib3
 urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != 'total' else None
 
 Tag = "gitcafe"
+Tag_name = "小纸条"
 siteUrl = "https://gitcafe.net"
 
 
@@ -33,7 +34,7 @@ def searchContent(key, token):
                 "vod_id": f'{Tag}${vod["key"]}',
                 "vod_name": vod["title"],
                 "vod_pic": "https://www.lgstatic.com/i/image2/M01/15/7E/CgoB5lysLXCADg6ZAABapAHUnQM321.jpg",
-                "vod_remarks": Tag + " " + vod['cat']
+                "vod_remarks": Tag_name + " " + vod['cat']
             })
         return videos
     except Exception as e:

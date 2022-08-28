@@ -12,6 +12,7 @@ import urllib3
 urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != 'total' else None
 
 Tag = "smdyy"
+Tag_name = "神马影院"
 siteUrl = "https://www.smdyy.cc"
 playerConfig = {
     "duoduozy": {"show": "高清线路", "or": 999, "ps": "0", "parse": "https://player.6080kan.cc/player/play.php?url="},
@@ -71,7 +72,7 @@ def searchContent(key, token):
                     "vod_id": f'{Tag}${vod.get("id")}',
                     "vod_name": vod.get("name"),
                     "vod_pic": cover,
-                    "vod_remarks": Tag
+                    "vod_remarks": Tag_name
                 })
         return videos
     except Exception as e:

@@ -13,6 +13,7 @@ urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != '
 
 
 Tag = "libvio"
+Tag_name = "LIBVIO影视"
 siteUrl = "https://www.libvio.me"
 playerConfig = {
     "duoduozy": {"sh": "LINE100", "pu": "https://play.shtpin.com/xplay/?url=", "sn": 1,
@@ -70,7 +71,7 @@ def searchContent(key, token):
                 "vod_id": f'{Tag}${vod.a["href"].split("/")[-1].split(".")[0]}',
                 "vod_name": vod.h4.a.get_text().strip(),
                 "vod_pic": vod.a["data-original"],
-                "vod_remarks": Tag + " " + vod.select_one(".pic-text.text-right").get_text()
+                "vod_remarks": Tag_name + " " + vod.select_one(".pic-text.text-right").get_text()
             })
         return videos
     except Exception as e:
@@ -216,9 +217,9 @@ def playerContent(ids, flag, token):
 
 
 if __name__ == '__main__':
-    # res = searchContent("间谍过家家")
+    res = searchContent("医院五日", "")
     # res = detailContent(100456)
     # func = "playerContent"
-    res = playerContent("100456-2-11")
+    # res = playerContent("100456-2-11")
     # res = eval(func)("68614-1-1")
     print(res)

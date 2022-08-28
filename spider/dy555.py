@@ -12,6 +12,7 @@ import urllib3
 urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != 'total' else None
 
 Tag = "dy555"
+Tag_name = "555电影"
 siteUrl = "https://555dy.fun"
 playerConfig = {
     "xg_app_player": {
@@ -206,7 +207,7 @@ def searchContent(key, token):
                     "vod_id": f'{Tag}${vod.get("id")}',
                     "vod_name": vod.get("name"),
                     "vod_pic": vod.get("pic"),
-                    "vod_remarks": Tag
+                    "vod_remarks": Tag_name
                 })
         return videos
     except Exception as e:

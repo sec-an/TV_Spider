@@ -8,6 +8,7 @@ urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != '
 
 
 Tag = "onelist"
+Tag_name = "Onelist"
 siteUrl = "https://onelist.top"
 
 
@@ -30,7 +31,7 @@ def searchContent(key, token):
                 "vod_id": f'{Tag}${vod["ID"]}',
                 "vod_name": vod["title"],
                 "vod_pic": vod["image"],
-                "vod_remarks": Tag + " " + vod["UpdatedAt"]
+                "vod_remarks": Tag_name + " " + vod["UpdatedAt"]
             })
         return videos
     except Exception as e:

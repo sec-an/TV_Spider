@@ -12,6 +12,7 @@ urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != '
 
 
 Tag = "czspp"
+Tag_name = "厂长资源"
 siteUrl = "https://czspp.com"
 
 
@@ -67,7 +68,7 @@ def searchContent(key, token):
                     "vod_id": f'{Tag}${vod.a["href"].split("/")[-1].split(".")[0]}',
                     "vod_name": name,
                     "vod_pic": vod.img["data-original"],
-                    "vod_remarks": Tag + " " + vod.span.get_text()
+                    "vod_remarks": Tag_name + " " + vod.span.get_text()
                 })
         return videos
     except Exception as e:

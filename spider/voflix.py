@@ -13,6 +13,7 @@ urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != '
 
 
 Tag = "voflix"
+Tag_name = "VOFLIX HD"
 siteUrl = "https://www.voflix.com"
 playerConfig = {
     "duoduozy": {"sh": "VOFLIX", "pu": "https://play.shtpin.com/xplay/?url=", "sn": 0, "or": 999}
@@ -47,7 +48,7 @@ def searchContent(key, token):
                 "vod_id": f'{Tag}${vod.a["href"].split("/")[-1].split(".")[0]}',
                 "vod_name": vod.strong.get_text().strip(),
                 "vod_pic": vod.img["data-original"],
-                "vod_remarks": Tag + " " + vod.select_one(".module-item-note").get_text()
+                "vod_remarks": Tag_name + " " + vod.select_one(".module-item-note").get_text()
             })
         return videos
     except Exception as e:

@@ -8,6 +8,7 @@ from .gitcafe import *
 from .libvio import *
 from .onelist import *
 from .smdyy import *
+from .sp360 import *
 from .voflix import *
 from .yiso import *
 from .zhaoziyuan import *
