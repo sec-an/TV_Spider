@@ -17,6 +17,7 @@ site_list = [
     "ddys",
     "dy555",
     "gitcafe",
+    "lezhutv",
     "libvio",
     "onelist",
     "smdyy",
@@ -125,4 +126,4 @@ def hello_world():  # put application's code here
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',port=9000)
+    app.run()
