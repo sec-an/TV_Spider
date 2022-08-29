@@ -5,6 +5,7 @@ from .czspp import *
 from .ddys import *
 from .dy555 import *
 from .gitcafe import *
+from .lezhutv import *
 from .libvio import *
 from .onelist import *
 from .smdyy import *
