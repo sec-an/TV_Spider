@@ -37,7 +37,30 @@ def miniapp_request(path, query):
 
 def cate_filter(type, ext, pg):
     try:
-        if type.startswith("rank_list"):
+        if type == "hot_gaia":
+            data = {}
+            if ext:
+                data = json.loads(base64.b64decode(ext).decode("utf-8"))
+            sort = data.get("sort", "recommend")
+            area = data.get("area", "全部")
+            path = f"/movie/{type}"
+            res = miniapp_request(path, {
+                "area": area,
+                "sort": sort,
+                "start": (int(pg) - 1) * count,
+                "count": count
+            })
+        elif type == "tv_hot" or type == "show_hot":
+            data = {}
+            if ext:
+                data = json.loads(base64.b64decode(ext).decode("utf-8"))
+            s_type = data.get("type", type)
+            path = f"/subject_collection/{s_type}/items"
+            res = miniapp_request(path, {
+                "start": (int(pg) - 1) * count,
+                "count": count
+            })
+        elif type.startswith("rank_list"):
             if ext:
                 data = json.loads(base64.b64decode(ext).decode("utf-8"))
                 id = data.popitem()[1]
@@ -94,18 +117,19 @@ def cate_filter(type, ext, pg):
             "limit": count,
             "total": res["total"]
         }
-        if type.startswith("rank_list"):
+        if type == "tv_hot" or type == "show_hot" or type.startswith("rank_list"):
             items = res['subject_collection_items']
         else:
             items = res["items"]
         lists = []
         for item in items:
             if item.get("type", "") == "movie" or item.get("type", "") == "tv":
+                rating = item.get("rating", "").get("value", "")
                 lists.append({
                     "vod_id": item.get("id", ""),
                     "vod_name": item.get("title", ""),
                     "vod_pic": item.get("pic", "").get("normal", ""),
-                    "vod_remarks": item.get("rating", "").get("value", "")
+                    "vod_remarks": rating if rating else "暂无评分"
                 })
         result.setdefault("list", lists)
         return result
@@ -120,11 +144,12 @@ def subject_real_time_hotest():
         lists = []
         for item in res["subject_collection_items"]:
             if item.get("type", "") == "movie" or item.get("type", "") == "tv":
+                rating = item.get("rating", "").get("value", "")
                 lists.append({
                     "vod_id": item.get("id", ""),
                     "vod_name": item.get("title", ""),
                     "vod_pic": item.get("pic", "").get("normal", ""),
-                    "vod_remarks": item.get("rating", "").get("value", "")
+                    "vod_remarks": rating if rating else "暂无评分"
                 })
         return lists
     except Exception as e:
