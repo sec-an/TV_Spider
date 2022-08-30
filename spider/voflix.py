@@ -81,7 +81,7 @@ def detailContent(ids, token):
             "type_name": data[2].a.get_text(),
             "vod_year": data[0].a.get_text(),
             "vod_area": data[1].a.get_text(),
-            "vod_remarks": doc.select("div.module-info-item-content")[4].get_text(),
+            "vod_remarks": doc.select("div.module-info-item-content")[-1].get_text(),
             "vod_actor": actor,
             "vod_director": director,
             "vod_content": doc.select_one("div.module-info-introduction-content>p").get_text().strip()
@@ -189,7 +189,7 @@ def playerContent(ids, flag, token):
 
 if __name__ == '__main__':
     # res = searchContent("成")
-    res = detailContent("voflix$11201")
+    res = detailContent("voflix$197", "")
     # func = "playerContent"
     # res = playerContent("11201-1-1")
     # res = eval(func)("68614-1-1")
