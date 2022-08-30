@@ -40,7 +40,7 @@ class ali_login(threading.Thread):
         self.token = token
 
     def run(self):
-        self._return = Aligo(refresh_token=self.token)
+        self._return = Aligo(self.token, refresh_token=self.token)
 
     def join(self):
         super().join(timeout=3)
@@ -173,7 +173,8 @@ def getdetailContent(tag, url, token):
         if file_type != "folder":
             if file_type == "file" and fileinfo.category == "video":
                 file_id = "root"
-            return ""
+            else:
+                return ""
         share_token = ali.get_share_token(share_id=share_id)
         file_list = {}
         get_file_list(file_list, share_id, share_token, file_id)
