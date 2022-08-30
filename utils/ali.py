@@ -61,7 +61,7 @@ def login(token):
         return ""
 
 
-Folder = re.compile("www.aliyundrive.com/s/([^/]+)(/folder/([^/]+))?")
+Folder = re.compile("www.aliyundrive.com/s/([\w]+)(/folder/([\w]+))?")
 
 
 def get_file_list(file_list, share_id, share_token, file_id):
