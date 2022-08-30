@@ -195,9 +195,9 @@ def playerContent(ids, flag, token):
 
 
 if __name__ == '__main__':
-    res = searchContent("壮志凌云")
+    # res = searchContent("壮志凌云")
     # res = detailContent(68614)
     # func = "playerContent"
-    # res = playerContent("smdyy___69684-1-3")
+    res = playerContent("smdyy___69685-1-1", "", "")
     # res = eval(func)("68614-1-1")
     print(res)

@@ -96,18 +96,33 @@ def detailContent(ids, token):
         else:
             name = title
             remark = doc.select_one("time").get_text().strip()
-        data = doc.select_one("div.abstract").get_text().replace(" ", "")
+        vod_pic = ""
+        type_name = ""
+        vod_year = ""
+        vod_area = ""
+        vod_actor = ""
+        vod_director = ""
+        vod_content = ""
+        if doc.select_one("div.abstract"):
+            data = doc.select_one("div.abstract").get_text().replace(" ", "")
+            vod_pic = doc.select_one("div.post img")["src"]
+            type_name = Regex("类型:(.*)制", data)
+            vod_year = Regex("年份:(.*)简", data)
+            vod_area = Regex("地区:(.*)年份", data)
+            vod_actor = Regex("演员:(.*)类", data)
+            vod_director = Regex("导演:(.*)演", data)
+            vod_content = Regex("简介:(.*)", data)
         vodList = {
             "vod_id": f'{Tag}${id}',
             "vod_name": name,
-            "vod_pic": doc.select_one("div.post img")["src"],
-            "type_name": Regex("类型:(.*)制", data),
-            "vod_year": Regex("年份:(.*)简", data),
-            "vod_area": Regex("地区:(.*)年份", data),
+            "vod_pic": vod_pic,
+            "type_name": type_name,
+            "vod_year": vod_year,
+            "vod_area": vod_area,
             "vod_remarks": remark,
-            "vod_actor": Regex("演员:(.*)类", data),
-            "vod_director": Regex("导演:(.*)演", data),
-            "vod_content": Regex("简介:(.*)", data)
+            "vod_actor": vod_actor,
+            "vod_director": vod_director,
+            "vod_content": vod_content
         }
 
         # 取播放列表数据
@@ -189,8 +204,8 @@ def playerContent(ids, flag, token):
 if __name__ == '__main__':
     # res = searchContent("成", "")
     # res = detailContent('ddys$top-gun-maverick', "")
-    # res = detailContent('ddys$golden-building', "")
+    res = detailContent('ddys$psychopath-diary', "")
     # func = "playerContent"
-    res = playerContent("ddys___/v/cn_drama/Golden_Building/Golden_Building_S01E01.mp4|https://ddys.tv/subddr/v/cn_drama/Golden_Building/Golden_Building_S01E01.ddr", "", "")
+    # res = playerContent("ddys___/v/jp_drama/alive_2020/alive_2020_e01.mp4|https://ddys.tv/subddr/v/jp_drama/alive_2020/alive_2020_e01.ddr", "", "")
     # res = eval(func)("68614-1-1")
     print(res)

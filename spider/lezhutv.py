@@ -88,7 +88,6 @@ def detailContent(ids, token):
 
         vod_play = {}
         # 取播放列表数据
-        regexPlay = re.compile("/vodplay/(\\d+)-(\\d+)-(\\d+).html")
         sources = doc.select("ul.list_block")
         for index, source in enumerate(sources):
             sourceName = f"线路{index + 1}"
@@ -146,5 +145,5 @@ def playerContent(ids, flag, token):
 if __name__ == '__main__':
     # res = searchContent("苍兰诀", "")
     # res = detailContent('lezhutv$221915', "")
-    res = playerContent("lezhutv___221915-1-34", "", "")
+    res = playerContent("lezhutv___221964-2-1", "", "")
     print(res)

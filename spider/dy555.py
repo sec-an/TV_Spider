@@ -309,11 +309,18 @@ def playerContent(ids, flag, token):
             if scContent.startswith("var player_"):
                 player = json.loads(scContent[scContent.find('{'):scContent.rfind('}') + 1])
                 if player.get("from") in playerConfig:
+                    data = utils_dy555.get_m3u8(player.get("url"))
+                    if "url" in data:
+                        url = data["url"]
+                        parse = "0"
+                    else:
+                        url = data["de_url"]
+                        parse = "1"
                     return {
                         "header": json.dumps(headers),
-                        "parse": 0,
+                        "parse": parse,
                         "playUrl": "",
-                        "url": utils_dy555.get_m3u8(player.get("url"))
+                        "url": url
                     }
     except Exception as e:
         print(e)
@@ -322,9 +329,9 @@ def playerContent(ids, flag, token):
 
 if __name__ == '__main__':
     # res = searchContent("壮志凌云", "")
-    res = detailContent('555dy$359288', "")
+    # res = detailContent('555dy$359288', "")
     # func = "playerContent"
-    # res = playerContent("555dy___359288-1-1", "", "")
+    res = playerContent("dy555___365156-1-1", "", "")
     # res = playerContent("555dy___359288-5-1", "", "")
     # res = eval(func)("68614-1-1")
     print(res)
