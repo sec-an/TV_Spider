@@ -67,7 +67,7 @@ def GetPlayUrl(data):
         rawdata = data
     dataText = AesDecrypt(rawdata)
     jsondata = json.loads(dataText)
-    return jsondata["url"]
+    return jsondata
 
 
 def get_m3u8(url):
