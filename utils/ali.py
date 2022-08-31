@@ -83,7 +83,7 @@ def get_file_list(file_list, share_id, share_token, file_id):
             if item.type == "folder":
                 folder_list.append(item.file_id)
             else:
-                if "video" in item.mime_type or "vnd.rn-realmedia-vbr" in item.mime_type:
+                if "video" in item.mime_type or "vnd.rn-realmedia-vbr" in item.mime_type or "video" in item.category:
                     file_name = item.name.replace("#", "_").replace("$", "_")
                     file_list.setdefault(file_name, share_id + "__" + share_token + "__" + item.file_id + "__" + item.category)
         for folder in folder_list:
@@ -113,6 +113,9 @@ def getpreviewUrl(share_id, share_token, file_id):
             "authorization": ali._auth.token.access_token
         }
         res = requests.post(url=url, data=json.dumps(data), headers=headers).json()
+        if "code" in res:
+            print(res["message"])
+            return ""
         live_transcoding_task_list = res['video_preview_play_info']['live_transcoding_task_list']
         live_transcoding_task_list.reverse()
         redirect_headers = requests.get(url=live_transcoding_task_list[0]["url"], headers=headers, allow_redirects=False).headers
@@ -156,8 +159,16 @@ def getdetailContent(tag, url, token):
         else:
             file_id = ""
         share_info = ali.get_share_info(share_id=share_id)
+        try:
+            data = json.loads(share_info.response.text)
+            if "code" in data:
+                print(data.get("message", "unknown error"))
+                return []
+        except Exception as e:
+            pass
         file_infos = share_info.file_infos
         if len(file_infos) == 0:
+            print("该文件夹下没有分享的文件")
             return []
         fileinfo = file_infos[0]
         if not file_id:
@@ -174,7 +185,8 @@ def getdetailContent(tag, url, token):
             if file_type == "file" and fileinfo.category == "video":
                 file_id = "root"
             else:
-                return ""
+                print(f"such file is a {fileinfo.category}")
+                return []
         share_token = ali.get_share_token(share_id=share_id)
         file_list = {}
         get_file_list(file_list, share_id, share_token, file_id)
