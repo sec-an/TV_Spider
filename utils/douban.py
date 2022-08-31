@@ -61,11 +61,13 @@ def cate_filter(type, ext, pg):
                 "count": count
             })
         elif type.startswith("rank_list"):
+            id = "movie_weekly_best" if type == "rank_list_movie" else "tv_chinese_best_weekly"
             if ext:
                 data = json.loads(base64.b64decode(ext).decode("utf-8"))
-                id = data.popitem()[1]
-            else:
-                id = "movie_weekly_best" if type == "rank_list_movie" else "tv_chinese_best_weekly"
+                try:
+                    id = data.popitem()[1]
+                except Exception as e:
+                    pass
             path = f"/subject_collection/{id}/items"
             res = miniapp_request(path, {
                 "start": (int(pg) - 1) * count,
