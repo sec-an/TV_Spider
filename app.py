@@ -95,7 +95,22 @@ def vod():
                     })
 
         # 详情
-        if ac and ids:
+        if ac:
+            if len(ids.split('$')) < 2:
+                return jsonify({
+                    "list": [{
+                        "vod_id": "",
+                        "vod_name": "请在设置中开启聚合模式，或尝试在上一页面长按图片搜索，或更新软件",
+                        "vod_pic": "",
+                        "type_name": "",
+                        "vod_year": "",
+                        "vod_area": "https://github.com/sec-an/TV_Spider",
+                        "vod_remarks": "",
+                        "vod_actor": "https://github.com/sec-an/TV_Spider",
+                        "vod_director": "https://github.com/sec-an/TV_Spider",
+                        "vod_content": "T4分类页面由豆瓣APP数据实时生成，与其他网站无关，故无法直接播放，需要开启聚合模式或在上一页面长按图片进入搜索或更新软件至最新版本，感谢理解与支持！"
+                    }]
+                })
             vodList = eval(f"{ids.split('$')[0]}.detailContent")(ids, ali_token)
             return jsonify({
                 "list": vodList
