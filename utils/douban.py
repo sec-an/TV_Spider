@@ -126,7 +126,7 @@ def cate_filter(type, ext, pg):
             if item.get("type", "") == "movie" or item.get("type", "") == "tv":
                 rating = item.get("rating", "").get("value", "")
                 lists.append({
-                    "vod_id": item.get("id", ""),
+                    "vod_id": "",
                     "vod_name": item.get("title", ""),
                     "vod_pic": item.get("pic", "").get("normal", ""),
                     "vod_remarks": rating if rating else "暂无评分"
@@ -146,7 +146,7 @@ def subject_real_time_hotest():
             if item.get("type", "") == "movie" or item.get("type", "") == "tv":
                 rating = item.get("rating", "").get("value", "")
                 lists.append({
-                    "vod_id": item.get("id", ""),
+                    "vod_id": "",
                     "vod_name": item.get("title", ""),
                     "vod_pic": item.get("pic", "").get("normal", ""),
                     "vod_remarks": rating if rating else "暂无评分"
