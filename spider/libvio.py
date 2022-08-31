@@ -93,7 +93,7 @@ def detailContent(ids, token):
             "type_name": Regex("类型：(\\S+)", data[0].get_text()),
             "vod_year": Regex("年份：(\\S+)", data[0].get_text()),
             "vod_area": Regex("地区：(\\S+)", data[0].get_text()),
-            "vod_remarks": Regex("更新：(\\S+)", data[4].get_text()),
+            "vod_remarks": Regex("更新：(\\S+)", data[-1].get_text()),
             "vod_actor": Regex("主演：(\\S+)", data[1].get_text()),
             "vod_director": Regex("导演：(\\S+)", data[1].get_text()),
             "vod_content": doc.select_one("span.detail-content").get_text().strip()
@@ -217,8 +217,8 @@ def playerContent(ids, flag, token):
 
 
 if __name__ == '__main__':
-    res = searchContent("医院五日", "")
-    # res = detailContent(100456)
+    # res = searchContent("医院五日", "")
+    res = detailContent("libvio$714287", "")
     # func = "playerContent"
     # res = playerContent("100456-2-11")
     # res = eval(func)("68614-1-1")

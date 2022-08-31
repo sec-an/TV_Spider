@@ -152,7 +152,8 @@ def playerContent(ids, flag, token):
         headers.setdefault("Accept-Language", " zh-CN,zh;q=0.9,en-GB;q=0.8,en-US;q=0.7,en;q=0.6")
         headers.setdefault("Accept-Encoding", " gzip, deflate")
         url = f"{siteUrl}/play/{id}.html"
-        allScript = BeautifulSoup(requests.get(url=url, headers=getHeaders(url)).text, "html.parser").select("script")
+        text = requests.get(url=url, headers=getHeaders(url)).text
+        allScript = BeautifulSoup(text, "html.parser").select("script")
         for item in allScript:
             scContent = item.get_text().strip()
             if scContent.startswith("var player_"):
@@ -189,6 +190,9 @@ def playerContent(ids, flag, token):
                             "playUrl": "",
                             "url": playurl
                         }
+        if "抱歉!!由于版权方要求，神马影院暂不提供此片播放。" in text:
+            print("抱歉!!由于版权方要求，神马影院暂不提供此片播放。")
+            return {}
     except Exception as e:
         print(e)
     return {}
@@ -198,6 +202,6 @@ if __name__ == '__main__':
     # res = searchContent("壮志凌云")
     # res = detailContent(68614)
     # func = "playerContent"
-    res = playerContent("smdyy___69685-1-1", "", "")
+    res = playerContent("smdyy___69573-1-1", "", "")
     # res = eval(func)("68614-1-1")
     print(res)

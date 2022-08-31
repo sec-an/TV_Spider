@@ -121,6 +121,9 @@ def detailContent(ids, token):
 
         # 取播放列表数据
         sources = doc.select("div.paly_list_btn > a")
+        if len(sources) == 0:
+            print("当前没有可播放的内容")
+            return []
         vodItems = []
         for source in sources:
             sourceName = source.get_text()
