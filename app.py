@@ -70,7 +70,7 @@ def vod():
                 search_sites = site_list
 
         # 分类数据
-        if filter == "true" and t:
+        if t:
             return douban.cate_filter(t, ext, pg)
 
         # 搜索
