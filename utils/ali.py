@@ -109,7 +109,7 @@ def getpreviewUrl(share_id, share_token, file_id):
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36",
             "Referer": "https://www.aliyundrive.com/",
-            "x-share-token": share_token,
+            "x-share-token": share_token.share_token,
             "authorization": ali._auth.token.access_token
         }
         res = requests.post(url=url, data=json.dumps(data), headers=headers).json()
@@ -133,12 +133,13 @@ def getdownloadUrl(share_id, share_token, file_id, category):
     try:
         global ali
         body = GetShareLinkDownloadUrlRequest(
+            expire_sec=600,
             share_id=share_id,
             file_id=file_id
         )
         if category == "audio":
             body.get_audio_play_info = True
-        return ali.get_share_link_download_url(body=body, share_token=share_token)
+        return ali.get_share_link_download_url(body=body, share_token=share_token.share_token)
     except Exception as e:
         print(e)
     return ""
@@ -206,6 +207,7 @@ def getplayerContent(id, flag, token):
         if ali == "":
             ali = login(token)
         split = id.split("__")
+        new_share_token = ali.get_share_token(share_id=split[0])
         headers = {
             "User-Agent": " Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36",
             "Referer": " https://www.aliyundrive.com/"
@@ -215,10 +217,10 @@ def getplayerContent(id, flag, token):
                 "header": json.dumps(headers),
                 "parse": 0,
                 "playUrl": "",
-                "url": getpreviewUrl(split[0], split[1], split[2])
+                "url": getpreviewUrl(split[0], new_share_token, split[2])
             }
         else:
-            DownloadURL = getdownloadUrl(split[0], split[1], split[2], split[3]).download_url
+            DownloadURL = getdownloadUrl(split[0], new_share_token, split[2], split[3]).download_url
             redirect_headers = requests.get(
                 url=DownloadURL,
                 headers={
