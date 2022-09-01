@@ -126,9 +126,9 @@ def cate_filter(type, ext, pg):
         lists = []
         for item in items:
             if item.get("type", "") == "movie" or item.get("type", "") == "tv":
-                rating = item.get("rating", "").get("value", "")
+                rating = item.get("rating", "").get("value", "") if item.get("rating", "") else ""
                 lists.append({
-                    "vod_id": "",
+                    "vod_id": f'{item.get("type", "")}__{item.get("id", "")}',
                     "vod_name": item.get("title", ""),
                     "vod_pic": item.get("pic", "").get("normal", ""),
                     "vod_remarks": rating if rating else "暂无评分"
@@ -146,9 +146,9 @@ def subject_real_time_hotest():
         lists = []
         for item in res["subject_collection_items"]:
             if item.get("type", "") == "movie" or item.get("type", "") == "tv":
-                rating = item.get("rating", "").get("value", "")
+                rating = item.get("rating", "").get("value", "") if item.get("rating", "") else ""
                 lists.append({
-                    "vod_id": "",
+                    "vod_id": f'{item.get("type", "")}__{item.get("id", "")}',
                     "vod_name": item.get("title", ""),
                     "vod_pic": item.get("pic", "").get("normal", ""),
                     "vod_remarks": rating if rating else "暂无评分"
@@ -159,8 +159,33 @@ def subject_real_time_hotest():
     return []
 
 
+def douban_detail(ids):
+    try:
+        id = ids.split("__")
+        res = miniapp_request(f"/{id[0]}/{id[1]}", {})
+        vodList = {
+            "vod_id": ids,
+            "vod_name": res.get("title", ""),
+            "vod_pic": res.get("pic", "").get("normal", ""),
+            "type_name": ",".join(item for item in res.get('genres', [])),
+            "vod_year": res.get("year", ""),
+            "vod_area": ",".join(item for item in res.get('countries', [])),
+            "vod_remarks": "请使用快速搜索或开启聚合模式进行搜索",
+            "vod_actor": ",".join(item["name"] for item in res.get("actors", [])),
+            "vod_director": ",".join(item["name"] for item in res.get("directors", [])),
+            "vod_content": res.get("intro", ""),
+            "vod_play_from": "本页面数据来自豆瓣$$$观看影片请点击上方快速搜索$$$或在设置中开启聚合模式$$$或在上一页面长按图片搜索",
+            "vod_play_url": "$$$"
+        }
+        return [vodList]
+    except Exception as e:
+        print(e)
+    return []
+
+
 if __name__ == '__main__':
     # res = cate_filter("movie", "eyLnsbvlnosiOiLllpzliacifQ==", "1")
-    res = cate_filter("rank_list_movie", "", "1")
+    # res = cate_filter("rank_list_movie", "", "1")
+    res = douban_detail("movie__35131346")
     # res = subject_real_time_hotest()
     print(res)
