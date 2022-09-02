@@ -170,7 +170,7 @@ def subject_real_time_hotest():
             if item.get("type", "") == "movie" or item.get("type", "") == "tv":
                 rating = item.get("rating", "").get("value", "") if item.get("rating", "") else ""
                 lists.append({
-                    "vod_id": f'msearch:{item.get("type", "")}__{item.get("id", "")}',
+                    "vod_id": "",
                     "vod_name": item.get("title", ""),
                     "vod_pic": item.get("pic", "").get("normal", ""),
                     "vod_remarks": str(rating if rating else "暂无评分") + " " + " | ".join(honor["title"] for honor in item.get("honor_infos", []))
