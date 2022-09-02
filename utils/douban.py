@@ -1,9 +1,10 @@
 # -*- coding:utf-8 -*-
 import requests
-import base64
 import json
 import math
 import urllib3
+import base64
+
 
 
 urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != 'total' else None
@@ -35,9 +36,25 @@ def miniapp_request(path, query):
     return {}
 
 
-def cate_filter(type, ext, pg):
+def cate_filter(type, ext, pg, douban):
     try:
-        if type == "hot_gaia":
+        if type == "interests":
+            data = {}
+            if ext:
+                data = json.loads(base64.b64decode(ext).decode("utf-8"))
+            status = data.get("status", "mark")
+            subtype_tag = data.get("subtype_tag", "")
+            year_tag = data.get("year_tag", "全部")
+            path = f"/user/{douban}/interests"
+            res = miniapp_request(path, {
+                "type": "movie",
+                "status": status,
+                "subtype_tag": subtype_tag,
+                "year_tag": year_tag,
+                "start": (int(pg) - 1) * count,
+                "count": count
+            })
+        elif type == "hot_gaia":
             data = {}
             if ext:
                 data = json.loads(base64.b64decode(ext).decode("utf-8"))
@@ -61,7 +78,7 @@ def cate_filter(type, ext, pg):
                 "count": count
             })
         elif type.startswith("rank_list"):
-            id = "movie_weekly_best" if type == "rank_list_movie" else "tv_chinese_best_weekly"
+            id = "movie_real_time_hotest" if type == "rank_list_movie" else "tv_real_time_hotest"
             if ext:
                 data = json.loads(base64.b64decode(ext).decode("utf-8"))
                 try:
@@ -121,17 +138,22 @@ def cate_filter(type, ext, pg):
         }
         if type == "tv_hot" or type == "show_hot" or type.startswith("rank_list"):
             items = res['subject_collection_items']
+        elif type == "interests":
+            items = []
+            for item in res["interests"]:
+                items.append(item["subject"])
         else:
             items = res["items"]
         lists = []
         for item in items:
             if item.get("type", "") == "movie" or item.get("type", "") == "tv":
                 rating = item.get("rating", "").get("value", "") if item.get("rating", "") else ""
+                title = item.get("title", "")
                 lists.append({
-                    "vod_id": f'{item.get("type", "")}__{item.get("id", "")}',
-                    "vod_name": item.get("title", ""),
+                    "vod_id": f'msearch:{item.get("type", "")}__{item.get("id", "")}',
+                    "vod_name": title if title != "未知电影" else "暂不支持展示",
                     "vod_pic": item.get("pic", "").get("normal", ""),
-                    "vod_remarks": rating if rating else "暂无评分"
+                    "vod_remarks": str(rating if rating else "暂无评分") + " " + " | ".join(honor["title"] for honor in item.get("honor_infos", []))
                 })
         result.setdefault("list", lists)
         return result
@@ -148,10 +170,10 @@ def subject_real_time_hotest():
             if item.get("type", "") == "movie" or item.get("type", "") == "tv":
                 rating = item.get("rating", "").get("value", "") if item.get("rating", "") else ""
                 lists.append({
-                    "vod_id": f'{item.get("type", "")}__{item.get("id", "")}',
+                    "vod_id": f'msearch:{item.get("type", "")}__{item.get("id", "")}',
                     "vod_name": item.get("title", ""),
                     "vod_pic": item.get("pic", "").get("normal", ""),
-                    "vod_remarks": rating if rating else "暂无评分"
+                    "vod_remarks": str(rating if rating else "暂无评分") + " " + " | ".join(honor["title"] for honor in item.get("honor_infos", []))
                 })
         return lists
     except Exception as e:
@@ -161,7 +183,7 @@ def subject_real_time_hotest():
 
 def douban_detail(ids):
     try:
-        id = ids.split("__")
+        id = ids.split(":")[-1].split("__")
         res = miniapp_request(f"/{id[0]}/{id[1]}", {})
         vodList = {
             "vod_id": ids,
@@ -170,11 +192,11 @@ def douban_detail(ids):
             "type_name": ",".join(item for item in res.get('genres', [])),
             "vod_year": res.get("year", ""),
             "vod_area": ",".join(item for item in res.get('countries', [])),
-            "vod_remarks": "请使用快速搜索或开启聚合模式进行搜索",
+            "vod_remarks": "请使用快速搜索或升级软件",
             "vod_actor": ",".join(item["name"] for item in res.get("actors", [])),
             "vod_director": ",".join(item["name"] for item in res.get("directors", [])),
             "vod_content": res.get("intro", ""),
-            "vod_play_from": "本页面数据来自豆瓣$$$观看影片请点击上方快速搜索$$$或在设置中开启聚合模式$$$或在上一页面长按图片搜索",
+            "vod_play_from": "本页面数据来自豆瓣$$$观看影片请点击上方快速搜索$$$或升级至最新版软件",
             "vod_play_url": "$$$"
         }
         return [vodList]
