@@ -22,7 +22,11 @@ def getHeaders():
 def searchContent(key, token):
     try:
         url = f"{SiteSearch}/index?force_v=1&kw={key}&from=&pageno=1&v_ap=1&tab=all"
-        lists = requests.get(url=url, headers=getHeaders()).json()["data"]["longData"]["rows"]
+        res = requests.get(url=url, headers=getHeaders()).json()
+        if len(res["data"]["longData"]):
+            lists = res["data"]["longData"]["rows"]
+        else:
+            return []
         videos = []
         for vod in lists:
             videos.append({
@@ -113,6 +117,7 @@ def playerContent(ids, flag, token):
 
 
 if __name__ == '__main__':
-    # res = searchContent("梦华录", "")
-    res = detailContent('sp360$3_ZcQmaqZv7ZIAED', "")
+    res = searchContent("灰影人", "")
+    # res = searchContent("冰雨火", "")
+    # res = detailContent('sp360$3_ZcQmaqZv7ZIAED', "")
     print(res)
