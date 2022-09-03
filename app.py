@@ -6,8 +6,11 @@ from flask_cors import CORS
 import concurrent.futures
 import json
 
+
+
 app = Flask(__name__)
 cors = CORS(app)
+
 
 site_list = [
     "bdys01",
@@ -33,7 +36,6 @@ def vod():
     try:
         with open('./json/douban.json', "r", encoding="utf-8") as f:
             douban_filter = json.load(f)
-
         wd = request.args.get('wd')
         ac = request.args.get('ac')
         quick = request.args.get('quick')
@@ -92,14 +94,14 @@ def vod():
                     for future in concurrent.futures.as_completed(to_do, timeout=timeout):  # 并发执行
                         # print(future.result())
                         res.extend(future.result())
-                    return jsonify({
-                        "list": res
-                    })
                 except Exception as e:
                     print(e)
-                    return jsonify({
-                        "list": res
-                    })
+                    import atexit
+                    atexit.unregister(concurrent.futures.thread._python_exit)
+                    executor.shutdown = lambda wait: None
+            return jsonify({
+                "list": res
+            })
 
         # 详情
         if ac:
