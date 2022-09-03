@@ -15,22 +15,6 @@ urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != '
 Tag = "libvio"
 Tag_name = "LIBVIO影视"
 siteUrl = "https://www.libvio.me"
-playerConfig = {
-    "duoduozy": {"sh": "LINE100", "pu": "https://play.shtpin.com/xplay/?url=", "sn": 1,
-                "or": 999},
-    "LINE405": {"sh": "LINE405", "pu": "https://sh-data-s01.chinaeast2.cloudapp.chinacloudapi.cn/lb.php?url=", "sn": 1,
-                "or": 999},
-    "LINE406": {"sh": "LINE406", "pu": "https://sh-data-s01.chinaeast2.cloudapp.chinacloudapi.cn/zm.php?url=", "sn": 1,
-                "or": 999},
-    "LINE407": {"sh": "LINE407", "pu": "https://sh-data-s01.chinaeast2.cloudapp.chinacloudapi.cn/lb.php?url=", "sn": 1,
-                "or": 999}, "LINE408": {"sh": "LINE408", "pu": "", "sn": 0, "or": 999},
-    "p300": {"sh": "LINE300", "pu": "", "sn": 0, "or": 999},
-    "p301": {"sh": "LINE301", "pu": "", "sn": 0, "or": 999},
-    "line402-日语": {"sh": "LINE402", "pu": "", "sn": 0, "or": 999},
-    "LINE400": {"sh": "LINE400", "pu": "https://sh-data-s01.chinaeast2.cloudapp.chinacloudapi.cn/lb.php?url=", "sn": 1,
-                "or": 999},
-    "line401": {"sh": "LINE401", "pu": "", "sn": 0, "or": 999}
-}
 
 
 def Regex(pattern, content):
@@ -102,17 +86,10 @@ def detailContent(ids, token):
         vod_play = {}
         # 取播放列表数据
         regexPlay = re.compile("/play/(\d+)-(\d+)-(\d+).html")
-        sources = doc.select("div.stui-vodlist__head h3")
         sourceList = doc.select("ul.stui-content__playlist")
+        sources = doc.select("div.stui-vodlist__head h3")[:len(sourceList)]
         for index, source in enumerate(sources):
             sourceName = source.get_text().strip()
-            found = False
-            for item in playerConfig:
-                if playerConfig[item]["sh"] == sourceName:
-                    found = True
-                    break
-            if not found:
-                continue
             playList = ""
             playListA = sourceList[index].select("li a")
             vodItems = []
@@ -156,70 +133,71 @@ def playerContent(ids, flag, token):
             scContent = item.get_text().strip()
             if scContent.startswith("var player_"):
                 player = json.loads(scContent[scContent.find('{'):scContent.rfind('}') + 1])
-                if player.get("from") in playerConfig:
-                    pCfg = playerConfig.get(player.get("from"))
-                    videoUrl = pCfg.get("pu") + player.get("url")
-                    allScripts = BeautifulSoup(requests.get(
-                        url=videoUrl,
-                        headers={
-                            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
-                            "Referer": "https://www.libvio.me/"
-                        }).text, "html.parser").select("body script")
-                    for j in allScripts:
-                        scContents = j.get_text().strip()
-                        matcher = Regex("(?<=urls\\s=\\s').*?(?=')", scContents)
-                        if matcher:
-                            return {
-                                # "header": json.dumps(headers),
-                                "parse": 0,
-                                "playUrl": "",
-                                "url": matcher
-                            }
-                        else:
-                            urlt = Regex("\"url\": *\"([^\"]*)\",", scContents)
-                            if not urlt:
-                                return {}
-                            token = Regex("\"token\": *\"([^\"]*)\"", scContents)
-                            if not token:
-                                return {}
-                            vkey = Regex("\"vkey\": *\"([^\"]*)\",", scContents)
-                            if not vkey:
-                                return {}
-                            hashmap = {
-                                "tm": str(int(round(time.time() * 1000))),
-                                "url": urlt,
-                                "vkey": vkey,
-                                "token": token,
-                                "sign": "F4penExTGogdt6U8",
-                            }
-                            res = requests.post(
-                                url="https://play.shtpin.com/xplay/555tZ4pvzHE3BpiO838.php",
-                                params=hashmap,
-                                headers={
-                                    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0"
-                                }).json()["url"][8:].encode("utf-8")
-                            playurl = str(base64.b64decode(res), "utf-8")[8:-8]
-                            return {
-                                # "header": json.dumps(headers),
-                                "parse": 0,
-                                "playUrl": "",
-                                "url": playurl
-                            }
-                else:
-                    return {
-                        "parse": 1,
-                        "playUrl": "",
-                        "url": url
-                    }
+                pCfg_text = requests.get(f"{siteUrl}/static/player/{player.get('from')}.js", headers=getHeaders(url)).text
+                s = pCfg_text.find("src=")+len("src=")+1
+                pCfg = pCfg_text[s:pCfg_text.find("'", s)]
+                videoUrl = pCfg + player.get("url")
+                allScripts = BeautifulSoup(requests.get(
+                    url=videoUrl,
+                    headers={
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
+                        "Referer": "https://www.libvio.me/"
+                    }).text, "html.parser").select("body script")
+                for j in allScripts:
+                    scContents = j.get_text().strip()
+                    matcher = Regex("(?<=urls\\s=\\s').*?(?=')", scContents)
+                    if matcher:
+                        return {
+                            # "header": json.dumps(headers),
+                            "parse": 0,
+                            "playUrl": "",
+                            "url": matcher
+                        }
+                    else:
+                        urlt = Regex("\"url\": *\"([^\"]*)\",", scContents)
+                        if not urlt:
+                            return {}
+                        token = Regex("\"token\": *\"([^\"]*)\"", scContents)
+                        if not token:
+                            return {}
+                        vkey = Regex("\"vkey\": *\"([^\"]*)\",", scContents)
+                        if not vkey:
+                            return {}
+                        hashmap = {
+                            "tm": str(int(round(time.time() * 1000))),
+                            "url": urlt,
+                            "vkey": vkey,
+                            "token": token,
+                            "sign": "F4penExTGogdt6U8",
+                        }
+                        res = requests.post(
+                            url="https://play.shtpin.com/xplay/555tZ4pvzHE3BpiO838.php",
+                            params=hashmap,
+                            headers={
+                                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0"
+                            }).json()["url"][8:].encode("utf-8")
+                        playurl = str(base64.b64decode(res), "utf-8")[8:-8]
+                        return {
+                            # "header": json.dumps(headers),
+                            "parse": 0,
+                            "playUrl": "",
+                            "url": playurl
+                        }
+                return {
+                    "parse": 1,
+                    "playUrl": "",
+                    "url": url
+                }
     except Exception as e:
         print(e)
     return {}
 
 
 if __name__ == '__main__':
-    # res = searchContent("医院五日", "")
-    res = detailContent("libvio$714287", "")
+    # res = searchContent("灰影人", "")
+    # res = detailContent("libvio$714338", "")
     # func = "playerContent"
-    # res = playerContent("100456-2-11")
+    # res = playerContent("libvio___714338-1-1", "", "")
+    res = playerContent("libvio___714338-2-1", "", "")
     # res = eval(func)("68614-1-1")
     print(res)
