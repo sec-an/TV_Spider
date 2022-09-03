@@ -74,6 +74,8 @@ def verifyCode(key):
             # time.sleep(1)
         except Exception as e:
             print(e)
+            if e.__class__.__name__ == 'ConnectTimeout':
+                break
         finally:
             retry = retry - 1
 
@@ -165,8 +167,8 @@ def detailContent(ids, token):
 
 
 if __name__ == '__main__':
-    # res = searchContent("冰雨火", "")
-    res = detailContent('bdys01$/guoju/22288', "")
+    res = searchContent("灰影人", "")
+    # res = detailContent('bdys01$/guoju/22288', "")
     # func = "playerContent"
     # res = playerContent("40542-1-1")
     # res = eval(func)("68614-1-1")
