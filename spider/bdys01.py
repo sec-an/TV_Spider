@@ -5,10 +5,17 @@ import requests
 from bs4 import BeautifulSoup
 import ddddocr
 import urllib3
+import re
+import hashlib
+from Crypto.Cipher import AES
+from binascii import b2a_hex
+from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.primitives.ciphers import algorithms
+import zlib
+import base64
 
 
 urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != 'total' else None
-
 
 Tag = "bdys01"
 Tag_name = "哔滴影视"
@@ -79,6 +86,60 @@ def verifyCode(key):
         finally:
             retry = retry - 1
 
+
+def pkcs7_padding(data):
+    padder = padding.PKCS7(algorithms.AES.block_size).padder()
+    padded_data = padder.update(data) + padder.finalize()
+    return padded_data
+
+
+def encrypt(text, key):
+    cryptor = AES.new(key.encode('utf-8'), AES.MODE_ECB)
+    ciphertext = cryptor.encrypt(pkcs7_padding(text.encode('utf-8')))
+    return b2a_hex(ciphertext).decode().upper()
+
+
+def get_lines(path):
+    try:
+        lines = []
+        pid = re.search("pid = (\d*)", requests.get(url=f'{siteUrl}{path}', headers=getHeaders(siteUrl)).text).group(1)
+        t = str(int(round(time.time() * 1000)))
+        key = hashlib.md5(f"{pid}-{t}".encode(encoding='UTF-8')).hexdigest()[0:16]
+        sg = encrypt(f"{pid}-{t}", key)
+        play_url = f"{siteUrl}/lines?t={t}&sg={sg}&pid={pid}"
+        data = requests.get(url=play_url, headers=getHeaders(play_url)).json()["data"]
+        if len(data) == 1:
+            play_line = requests.post(
+                url=f"{siteUrl}/god/{pid}",
+                data={
+                    "t": t,
+                    "sg": sg,
+                    "verifyCode": 666
+                },
+                headers=getHeaders(siteUrl)
+            ).json()["url"]
+            lines.append(play_line)
+        else:
+            for item in data:
+                if item == "m3u8_2":
+                    play_lines = data[item].split(",")
+                    for line in play_lines:
+                        lines.append(line.replace("www.bde4.cc", "www.bdys01.com"))
+                elif item == "m3u8":
+                    lines.append(data[item].replace("www.bde4.cc", "www.bdys01.com"))
+                elif item == "url3":
+                    lines.append(data[item])
+        return lines
+    except Exception as e:
+        print(e)
+        return []
+
+
+def add_domain(matched):
+    url = "https://vod.bdys.me/" + matched.group(0)
+    return url
+
+
 def searchContent(key, token):
     try:
         res = verifyCode(key)
@@ -104,7 +165,8 @@ def detailContent(ids, token):
     try:
         id = ids.split("$")[-1]
         url = f"{siteUrl}/{id}.htm"
-        doc = BeautifulSoup(requests.get(url=url, headers=getHeaders(siteUrl)).text, "html.parser").select_one("div.container-xl.clear-padding-sm.my-3.py-1")
+        doc = BeautifulSoup(requests.get(url=url, headers=getHeaders(siteUrl)).text, "html.parser").select_one(
+            "div.container-xl.clear-padding-sm.my-3.py-1")
         # 取基本数据
         sourcediv = doc.select_one("div.card-body")
         module_info_items = sourcediv.select("p")
@@ -139,37 +201,65 @@ def detailContent(ids, token):
             "vod_actor": actor,
             "vod_director": director,
             "vod_content": doc.select_one("div.card.collapse").select_one("div.card-body").get_text().strip(),
-            "vod_play_from": "哔滴磁力"
         }
 
+        vod_play = {}
         # 取播放列表数据
-        sources = doc.select_one("tbody").select("tr")
-        vodItems = []
+        sources = doc.select("a.btn.btn-square")
+        lines_count = 0
         for source in sources:
-            sourceName = source.select_one("td.text-muted").get_text()
-            vodItems.append(sourceName + "$" + source.a["href"])
-        if len(vodItems):
-            playList = "#".join(vodItems)
-        vodList.setdefault("vod_play_url", playList)
+            lines_count = len(get_lines(source["href"]))
+            if lines_count:
+                break
+        for i in range(lines_count):
+            sourceName = f"线路{i + 1}"
+            vodItems = []
+            playList = ""
+            for source in sources:
+                vodItems.append(
+                    source.get_text() + "$" + f"{Tag}___" + source["href"].split(".")[0] + f"__{(i + 1) % lines_count}")
+                if len(vodItems):
+                    playList = "#".join(vodItems)
+            vod_play.setdefault(sourceName, playList)
+        if len(vod_play):
+            vod_play_from = "$$$".join(vod_play.keys())
+            vod_play_url = "$$$".join(vod_play.values())
+            vodList.setdefault("vod_play_from", vod_play_from)
+            vodList.setdefault("vod_play_url", vod_play_url)
         return [vodList]
-
-        # sources = doc.select_one("tbody").select("tr")
-        # vodItems = []
-        # result = []
-        # for source in sources:
-        #     sourceName = source.select_one("td.text-muted").get_text()
-        #     vodList["vod_play_url"] = sourceName + "$" + source.a["href"]
-        #     result.append(vodList.copy())
-        # return result
     except Exception as e:
         print(e)
     return []
 
 
+def playerContent(ids, flag, token):
+    try:
+        ids = ids.split("___")
+        url = ids[-1].split("__")[0]
+        play_from = int(ids[-1].split("__")[-1])
+        lines = get_lines(f"{url}.htm")
+        m3u8_url = lines[play_from]
+        if m3u8_url.endswith("m3u8"):
+            data = list(requests.get(url=m3u8_url, headers=getHeaders("")).content)[3354:]
+            data = zlib.decompress(bytes(data), 16 + zlib.MAX_WBITS).decode()
+            m3u8_raw_data = re.sub(r".*?\.ts", add_domain, data)
+            m3u8_url = f"data:application/vnd.apple.mpegurl;base64,{base64.b64encode(m3u8_raw_data.encode('utf-8')).decode()}"
+        return {
+            "header": "",
+            "parse": "0",
+            "playUrl": "",
+            "url": m3u8_url
+        }
+    except Exception as e:
+        print(e)
+    return {}
+
+
 if __name__ == '__main__':
-    res = searchContent("灰影人", "")
-    # res = detailContent('bdys01$/guoju/22288', "")
+    # res = searchContent("灰影人", "")
+    # res = detailContent('bdys01$/dongzuo/22321', "")
     # func = "playerContent"
-    # res = playerContent("40542-1-1")
+    res = playerContent("bdys01___/play/22321-0__0", "", "")
     # res = eval(func)("68614-1-1")
+    # res = get_lines("/play/22321-0.htm")
     print(res)
