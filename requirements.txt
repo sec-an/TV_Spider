@@ -4,3 +4,4 @@ pycryptodome
 beautifulsoup4
 ddddocr
 websockets
+cryptography
