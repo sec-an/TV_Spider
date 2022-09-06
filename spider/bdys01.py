@@ -117,18 +117,38 @@ def get_lines(path):
                     "verifyCode": 666
                 },
                 headers=getHeaders(siteUrl)
-            ).json()["url"]
-            lines.append(play_line)
+            ).json().get("url", "")
+            if not play_line:
+                play_line = requests.post(
+                    url=f"{siteUrl}/god/{pid}?type=1",
+                    data={
+                        "t": t,
+                        "sg": sg,
+                        "verifyCode": 888
+                    },
+                    headers=getHeaders(siteUrl)
+                ).json().get("url", "")
+            if "rkey" in play_line:
+                realurl = play_line.replace("?rkey", str(int(round(time.time() * 1000))) + ".mp4?ver=6010&rkey")
+            elif "ixigua" in play_line:
+                realurl = play_line
+            else:
+                realurl = play_line.replace("http:", "https:") + "/" + str(int(round(time.time() * 1000))) + ".mp4"
+            lines.append(realurl)
         else:
             for item in data:
-                if item == "m3u8_2":
+                if item == "m3u8_2" or item == "m3u8":
                     play_lines = data[item].split(",")
                     for line in play_lines:
-                        lines.append(line.replace("www.bde4.cc", "www.bdys01.com"))
-                elif item == "m3u8":
-                    lines.append(data[item].replace("www.bde4.cc", "www.bdys01.com"))
+                        if "mp4" in line:
+                            lines.append(line)
+                        else:
+                            lines.append(line.replace("www.bde4.cc", "www.bdys01.com"))
                 elif item == "url3":
-                    lines.append(data[item])
+                    if "mp4" in data[item]:
+                        lines.append(data[item])
+                    else:
+                        lines.append(data[item])
         return lines
     except Exception as e:
         print(e)
