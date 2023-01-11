@@ -64,10 +64,10 @@ def playerContent(ids, flag, token):
 
 
 if __name__ == '__main__':
-    # res = searchContent("老友记")
+    res = searchContent("老友记", "1")
     # res = detailContent("yiso$https://www.aliyundrive.com/s/k7mVEDdow6K", "")
     # res = detailContent("yiso$https://www.aliyundrive.com/s/j4Lfi2JCeiY", "")
     # res = detailContent("yiso$https://www.aliyundrive.com/s/TKhdWEjFmLB", "")
-    res = detailContent("yiso$https://www.aliyundrive.com/s/qpbVbqwFqYS", "")
+    # res = detailContent("yiso$https://www.aliyundrive.com/s/qpbVbqwFqYS", "")
     # res = playerContent("yiso___3wRZPrya62d__eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b21Kc29uIjoie1wiZG9tYWluX2lkXCI6XCJiajI5XCIsXCJzaGFyZV9pZFwiOlwiM3dSWlByeWE2MmRcIixcImNyZWF0b3JcIjpcImFhNWVhM2E4OGI2YjRiMzNhNGEzZDk2YzI3YTQ3MjRlXCIsXCJ1c2VyX2lkXCI6XCJhbm9ueW1vdXNcIn0iLCJjdXN0b21UeXBlIjoic2hhcmVfbGluayIsImV4cCI6MTY2MTg3ODU5NywiaWF0IjoxNjYxODcxMzM3fQ.Gga13jLMcFSzb5q9eOTj4RhskXYu6XlUiGjrvM8WrYEA1YBPqY623S57Jb8oJUQQvRZf1n7T4Qkr7pRzUwMqtZFzd6WZDuS9pMq7hOnJ__GLCv4Qh5dDCIWPd5a52QlyA_DvGH7v59_CfX-Xwd_x6_roxca6UBThauyaNHuxIJE__618e92dece90a01af07a43bda50a2b9d26e1dd6f__video", "AliYun原画", "")
     print(res)

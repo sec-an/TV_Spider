@@ -277,9 +277,9 @@ def playerContent(ids, flag, token):
 
 if __name__ == '__main__':
     # res = searchContent("灰影人", "")
-    # res = detailContent('bdys01$/dongzuo/22321', "")
+    res = detailContent('bdys01$/dongzuo/22321', "")
     # func = "playerContent"
-    res = playerContent("bdys01___/play/22321-0__0", "", "")
+    # res = playerContent("bdys01___/play/22321-0__0", "", "")
     # res = eval(func)("68614-1-1")
     # res = get_lines("/play/22321-0.htm")
     print(res)

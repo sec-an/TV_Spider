@@ -223,8 +223,8 @@ def playerContent(ids, flag, token):
 
 
 if __name__ == '__main__':
-    # res = searchContent("冰雨火", "")
-    res = detailContent('bttwoo$52995', "")
+    res = searchContent("灰影人", "")
+    # res = detailContent('bttwoo$52995', "")
     # func = "playerContent"
     # res = playerContent("bttwoo___bXZfODA5NzQtbm1fMg==", "", "")
     # res = eval(func)("68614-1-1")

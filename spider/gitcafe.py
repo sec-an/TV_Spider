@@ -70,7 +70,7 @@ def playerContent(ids, flag, token):
 
 
 if __name__ == '__main__':
-    # res = searchContent("苍兰诀")
-    res = detailContent("gitcafe$kCFAU2eJYqq", "")
+    res = searchContent("灰影人", "")
+    # res = detailContent("gitcafe$kCFAU2eJYqq", "")
     # res = playerContent("gitcafe___QUGvBnYzLBD__eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjdXN0b21Kc29uIjoie1wiZG9tYWluX2lkXCI6XCJiajI5XCIsXCJzaGFyZV9pZFwiOlwiUVVHdkJuWXpMQkRcIixcImNyZWF0b3JcIjpcIjY1YWI0ZmU4ZTU2ZjQ4M2ViYjIyYzA4ZGIxZmViN2Q4XCIsXCJ1c2VyX2lkXCI6XCJhbm9ueW1vdXNcIn0iLCJjdXN0b21UeXBlIjoic2hhcmVfbGluayIsImV4cCI6MTY2MTg3OTY1MiwiaWF0IjoxNjYxODcyMzkyfQ.jxmO3LsBTxaQZYSz6ubU3X2ABtH9rqplC4gfpp8uv0oHTXeK_yIJ5ABluuUlYJQAFqVEmFQtQO_jVkOsFl0GTnHN8_JMLLrZTv9cLbA__FvfQIbvcf0XenpR0rtK4ayEZ7l2wllHV9MKw4Y9AQ9RaRUOz9O--b6tXo9Qd_4AwYM__6247c111177e2dfc51af4a1ba3bee618af32b794__video", "AliYun", "")
     print(res)

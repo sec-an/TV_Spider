@@ -117,7 +117,7 @@ def playerContent(ids, flag, token):
 
 
 if __name__ == '__main__':
-    res = searchContent("灰影人", "")
+    # res = searchContent("月升沧海", "")
     # res = searchContent("冰雨火", "")
-    # res = detailContent('sp360$3_ZcQmaqZv7ZIAED', "")
+    res = detailContent('sp360$2_QbVqbX7lTGLrMH', "")
     print(res)

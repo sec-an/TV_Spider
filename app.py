@@ -3,17 +3,20 @@ from spider import *
 from utils import douban
 from flask import Flask, abort, request, jsonify
 from flask_cors import CORS
+from flask_compress import Compress
 import concurrent.futures
 import json
-
+import copy
 
 
 app = Flask(__name__)
 cors = CORS(app)
+Compress(app)
 
 
 site_list = [
     "bdys01",
+    "bdys_old",
     "bttwoo",
     "cokemv",
     "czspp",
@@ -26,16 +29,19 @@ site_list = [
     "smdyy",
     "sp360",
     "voflix",
+    "yhdm",
     "yiso",
     "zhaoziyuan"
 ]
+
+with open('./json/douban.json', "r", encoding="utf-8") as f:
+    douban_basic = json.load(f)
 
 
 @app.route('/vod')
 def vod():
     try:
-        with open('./json/douban.json', "r", encoding="utf-8") as f:
-            douban_filter = json.load(f)
+        douban_filter = copy.deepcopy(douban_basic)
         wd = request.args.get('wd')
         ac = request.args.get('ac')
         quick = request.args.get('quick')

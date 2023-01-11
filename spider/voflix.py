@@ -94,13 +94,13 @@ def detailContent(ids, token):
         sourceList = doc.select("div.module-list>div.module-play-list")
         for index, source in enumerate(sources):
             sourceName = source.get_text()
-            found = False
-            for item in playerConfig:
-                if playerConfig[item]["sh"] == sourceName:
-                    found = True
-                    break
-            if not found:
-                continue
+            # found = False
+            # for item in playerConfig:
+            #     if playerConfig[item]["sh"] == sourceName:
+            #         found = True
+            #         break
+            # if not found:
+            #     continue
             playList = ""
             playListA = sourceList[index].select("div.module-play-list-content>a")
             vodItems = []
@@ -142,17 +142,34 @@ def playerContent(ids, flag, token):
             scContent = item.get_text().strip()
             if scContent.startswith("var player_"):
                 player = json.loads(scContent[scContent.find('{'):scContent.rfind('}') + 1])
-                if player.get("from") in playerConfig:
-                    pCfg = playerConfig.get(player.get("from"))
-                    videoUrl = pCfg.get("pu") + player.get("url")
-                    allScripts = BeautifulSoup(requests.get(
-                        url=videoUrl,
-                        headers={
-                            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
-                            "Referer": "https://www.libvio.me/"
-                        }).text, "html.parser").select("body script")
-                    for j in allScripts:
-                        scContents = j.get_text().strip()
+                if player.get('from') == "if101":
+                    return {
+                        "parse": "0",
+                        "playUrl": "",
+                        "url": player.get('url')
+                    }
+                pCfg_text = requests.get(f"{siteUrl}/static/player/{player.get('from')}.js",
+                                         headers=getHeaders()).text
+                s = pCfg_text.find("src=") + len("src=") + 1
+                pCfg = pCfg_text[s:pCfg_text.find("'", s)]
+                videoUrl = pCfg + player.get("url")
+                allScripts = BeautifulSoup(requests.get(
+                    url=videoUrl,
+                    headers={
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
+                        "Referer": "https://www.voflix.com/"
+                    }).text, "html.parser").select("body script")
+                for j in allScripts:
+                    scContents = j.get_text().strip()
+                    matcher = Regex("(?<=urls\\s=\\s').*?(?=')", scContents)
+                    if matcher:
+                        return {
+                            # "header": json.dumps(headers),
+                            "parse": 0,
+                            "playUrl": "",
+                            "url": matcher
+                        }
+                    else:
                         urlt = Regex("\"url\": *\"([^\"]*)\",", scContents)
                         if not urlt:
                             return {}
@@ -170,27 +187,71 @@ def playerContent(ids, flag, token):
                             "sign": "F4penExTGogdt6U8",
                         }
                         res = requests.post(
-                            url="https://play.shtpin.com/xplay/555tZ4pvzHE3BpiO838.php",
+                            url="https://play.shcpin.com/xplay/555tZ4pvzHE3BpiO838.php",
                             params=hashmap,
                             headers={
                                 "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0"
                             }).json()["url"][8:].encode("utf-8")
                         playurl = str(base64.b64decode(res), "utf-8")[8:-8]
                         return {
-                            "header": json.dumps(headers),
+                            # "header": json.dumps(headers),
                             "parse": 0,
                             "playUrl": "",
                             "url": playurl
                         }
+                return {
+                    "parse": 1,
+                    "playUrl": "",
+                    "url": url
+                }
+                # if player.get("from") in playerConfig:
+                #     pCfg = playerConfig.get(player.get("from"))
+                #     videoUrl = pCfg.get("pu") + player.get("url")
+                #     allScripts = BeautifulSoup(requests.get(
+                #         url=videoUrl,
+                #         headers={
+                #             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
+                #             "Referer": "https://www.libvio.me/"
+                #         }).text, "html.parser").select("body script")
+                #     for j in allScripts:
+                #         scContents = j.get_text().strip()
+                #         urlt = Regex("\"url\": *\"([^\"]*)\",", scContents)
+                #         if not urlt:
+                #             return {}
+                #         token = Regex("\"token\": *\"([^\"]*)\"", scContents)
+                #         if not token:
+                #             return {}
+                #         vkey = Regex("\"vkey\": *\"([^\"]*)\",", scContents)
+                #         if not vkey:
+                #             return {}
+                #         hashmap = {
+                #             "tm": str(int(round(time.time() * 1000))),
+                #             "url": urlt,
+                #             "vkey": vkey,
+                #             "token": token,
+                #             "sign": "F4penExTGogdt6U8",
+                #         }
+                #         res = requests.post(
+                #             url="https://play.shtpin.com/xplay/555tZ4pvzHE3BpiO838.php",
+                #             params=hashmap,
+                #             headers={
+                #                 "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0"
+                #             }).json()["url"][8:].encode("utf-8")
+                #         playurl = str(base64.b64decode(res), "utf-8")[8:-8]
+                #         return {
+                #             "header": json.dumps(headers),
+                #             "parse": 0,
+                #             "playUrl": "",
+                #             "url": playurl
+                #         }
     except Exception as e:
         print(e)
     return {}
 
 
 if __name__ == '__main__':
-    # res = searchContent("成")
-    res = detailContent("voflix$197", "")
-    # func = "playerContent"
-    # res = playerContent("11201-1-1")
-    # res = eval(func)("68614-1-1")
+    # res = searchContent("东八区的先生们", "")
+    res = detailContent("voflix$11527", "")
+    # res = playerContent("voflix___11527-1-1", "", "")
+    # res = playerContent("voflix___11527-2-1", "", "")
     print(res)

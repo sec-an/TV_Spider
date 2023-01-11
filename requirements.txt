@@ -5,6 +5,4 @@ beautifulsoup4
 ddddocr
 requests
 aligo
-gunicorn
 websockets
-cryptography

@@ -8,6 +8,7 @@ import base64
 import time
 from Crypto.Cipher import AES
 import urllib3
+import zlib
 
 
 urllib3.util.timeout.Timeout._validate_timeout = lambda *args: 5 if args[2] != 'total' else None
@@ -141,7 +142,7 @@ def detailContent(ids, token):
                 Tracks = data.get("tracks")
                 for source in Tracks:
                     zm = "https://ddys.tv/subddr" + source["subsrc"]
-                    vodItems.append(source["caption"] + "$" + f"{Tag}___" + source["src0"] + "|" + zm)
+                    vodItems.append(source["caption"] + "$" + f"{Tag}___" + source["src0"] + "|" + zm + "|" + source.get("src1", ""))
                 if len(vodItems):
                     playList = "#".join(vodItems)
                 if len(playList) == 0:
@@ -156,7 +157,7 @@ def detailContent(ids, token):
             Tracks = data.get("tracks")
             for source in Tracks:
                 zm = "https://ddys.tv/subddr" + source["subsrc"]
-                vodItems.append(source["caption"] + "$" + f"{Tag}___" + source["src0"] + "|" + zm)
+                vodItems.append(source["caption"] + "$" + f"{Tag}___" + source["src0"] + "|" + zm + "|" + source.get("src1", ""))
             if len(vodItems):
                 playList = "#".join(vodItems)
             if len(playList) == 0:
@@ -177,25 +178,38 @@ def playerContent(ids, flag, token):
     try:
         id = ids.split("___")[-1]
         item = id.split("|")
-        data = {
-            "path": item[0],
-            "expire": int(round(time.time() * 1000)) + 600000
-        }
-        real_id = aes_cbc_encrypt(json.dumps(data, separators=(',', ':')), "gh3Zalc874hD7fcV", "1529076118276120")
-        url = f"https://ddys.tv/getvddr/video?id={quote_plus(real_id)}&dim=1080P+&type=mix"
+        if item[-1] == "":
+            data = {
+                "path": item[0],
+                "expire": int(round(time.time() * 1000)) + 600000
+            }
+            real_id = quote_plus(aes_cbc_encrypt(json.dumps(data, separators=(',', ':')), "gh3Zalc874hD7fcV", "1529076118276120"))
+        else:
+            real_id = item[-1]
+        url = f"https://ddys.tv/getvddr/video?id={real_id}&dim=1080P+&type=mix"
         playUrl = requests.get(
             url=url,
             headers=getHeaders(url)
-        ).json()["url"]
+        ).json()
         ZiMu = item[1]
-        return {
+        result = {
             "header": "",
             "parse": 0,
             "playUrl": "",
-            "url": playUrl,
             "subf": "/vtt/utf-8",
             "subt": quote(ZiMu)
         }
+        if "url" in playUrl:
+            real_url = playUrl["url"]
+        else:
+            m3u8_raw = []
+            for character in playUrl["pin"]:
+                m3u8_raw.append(ord(character))
+            m3u8_raw_data = zlib.decompress(bytes(m3u8_raw), 32 + zlib.MAX_WBITS).decode()
+            result["m3u8"] = m3u8_raw_data
+            real_url = ""
+        result["url"] = real_url
+        return result
     except Exception as e:
         print(e)
     return {}
@@ -204,8 +218,7 @@ def playerContent(ids, flag, token):
 if __name__ == '__main__':
     # res = searchContent("成", "")
     # res = detailContent('ddys$top-gun-maverick', "")
-    res = detailContent('ddys$psychopath-diary', "")
-    # func = "playerContent"
-    # res = playerContent("ddys___/v/jp_drama/alive_2020/alive_2020_e01.mp4|https://ddys.tv/subddr/v/jp_drama/alive_2020/alive_2020_e01.ddr", "", "")
+    # res = detailContent('ddys$me-time', "")
+    res = playerContent("ddys___/v/movie/Fall.2022.mp4|https://ddys.tv/subddr/v/movie/Fall.2022.ddr|u7q0YdmkLeNnmxmw%2FxfDI5Oz4NLa5556Cl9H88N9eAHC%2F5XgUISnFaHbrOEwUcoj", "1", "")
     # res = eval(func)("68614-1-1")
     print(res)

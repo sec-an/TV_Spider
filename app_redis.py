@@ -4,8 +4,16 @@ from utils import douban
 from flask import Flask, abort, request, jsonify
 from flask_cors import CORS
 from flask_caching import Cache
+from flask_compress import Compress
 import concurrent.futures
 import json
+import random
+import string
+import time
+import copy
+
+T4_Url = "https://t4.secan.icu"
+
 
 redis_config = {
     'CACHE_TYPE': 'redis',
@@ -17,11 +25,13 @@ redis_config = {
 
 app = Flask(__name__)
 cors = CORS(app)
+Compress(app)
 cache = Cache(app=app, config=redis_config)
-# cache.clear()
+cache.clear()
 
 site_list = [
-    # "bdys01",
+    "bdys01",
+    "bdys_old",
     "bttwoo",
     "cokemv",
     "czspp",
@@ -34,6 +44,7 @@ site_list = [
     "smdyy",
     "sp360",
     "voflix",
+    "yhdm",
     "yiso",
     "zhaoziyuan"
 ]
@@ -41,12 +52,13 @@ site_list = [
 ali_sites = ["gitcafe", "yiso", "zhaoziyuan"]
 
 with open('./json/douban.json', "r", encoding="utf-8") as f:
-    douban_filter = json.load(f)
+    douban_basic = json.load(f)
 
 
 @app.route('/vod')
 def vod():
     try:
+        douban_filter = copy.deepcopy(douban_basic)
         wd = request.args.get('wd')
         ac = request.args.get('ac')
         quick = request.args.get('quick')
@@ -58,16 +70,22 @@ def vod():
         ext = request.args.get('ext')
         ids = request.args.get('ids')
         q = request.args.get('q')
+        douban_id = request.args.get('douban')
 
         sites = request.args.get('sites')
         ali_token = request.args.get('ali_token')
         try:
             timeout = int(request.args.get('timeout'))
         except Exception as e:
-            timeout = 5
+            timeout = 10
 
         if not ali_token:
             ali_token = ""
+
+        if not douban_id:
+            douban_id = ""
+            douban_filter["class"].pop(0)
+            douban_filter["filters"].pop("interests")
 
         # 站点筛选
         search_sites = []
@@ -85,13 +103,18 @@ def vod():
 
         # 分类数据
         if t:
-            res = cache.get(f"{t}_{ext}_{pg}")
-            if res:
-                return res
+            if t == "interests":
+                res = cache.get(f"{t}_{ext}_{pg}_{douban_id}")
+                if not res:
+                    res = douban.cate_filter(t, ext, pg, douban_id)
+                    if res:
+                        cache.set(f"{t}_{ext}_{pg}_{douban_id}", res, timeout=60 * 15)
             else:
-                res = douban.cate_filter(t, ext, pg)
-                if res:
-                    cache.set(f"{t}_{ext}_{pg}", res, timeout=60*60*3)
+                res = cache.get(f"{t}_{ext}_{pg}")
+                if not res:
+                    res = douban.cate_filter(t, ext, pg, douban_id)
+                    if res:
+                        cache.set(f"{t}_{ext}_{pg}", res, timeout=60*60*2)
             return res
 
         # 搜索
@@ -119,6 +142,9 @@ def vod():
                             cache.set(key_name, res, timeout=60*30)
                     except Exception as e:
                         print(e)
+                        import atexit
+                        atexit.unregister(concurrent.futures.thread._python_exit)
+                        executor.shutdown = lambda wait: None
                     finally:
                         return jsonify({
                             "list": res
@@ -126,30 +152,20 @@ def vod():
 
         # 详情
         if ac:
-            if len(ids.split('$')) < 2:
-                return jsonify({
-                    "list": [{
-                        "vod_id": "",
-                        "vod_name": "请在设置中开启聚合模式，或尝试在上一页面长按图片搜索，或更新软件",
-                        "vod_pic": "",
-                        "type_name": "",
-                        "vod_year": "",
-                        "vod_area": "https://github.com/sec-an/TV_Spider",
-                        "vod_remarks": "",
-                        "vod_actor": "https://github.com/sec-an/TV_Spider",
-                        "vod_director": "https://github.com/sec-an/TV_Spider",
-                        "vod_content": "T4分类页面由豆瓣APP数据实时生成，与其他网站无关，故无法直接播放，需要开启聚合模式或在上一页面长按图片进入搜索或更新软件至最新版本，感谢理解与支持！"
-                    }]
-                })
             vodList = cache.get(f"detail__{ids}")
             if not vodList:
-                vodList = eval(f"{ids.split('$')[0]}.detailContent")(ids, ali_token)
-                if vodList:
-                    if ids.split('$')[0] not in ali_sites:
-                        cache.set(f"detail__{ids}", vodList, 60 * 20)
+                if len(ids.split('$')) < 2:
+                    vodList = douban.douban_detail(ids)
+                    if vodList:
+                        cache.set(f"detail__{ids}", vodList, 60 * 60 * 24)
                 else:
-                    with open("error_detail.txt", "a") as f:
-                        f.write(f"{ids}\n")
+                    vodList = eval(f"{ids.split('$')[0]}.detailContent")(ids, ali_token)
+                    if vodList:
+                        if ids.split('$')[0] not in ali_sites:
+                            cache.set(f"detail__{ids}", vodList, 60 * 20)
+                    # else:
+                    #     with open("error_detail.txt", "a") as f:
+                    #         f.write(f"{ids}\n")
             return jsonify({
                 "list": vodList
             })
@@ -158,8 +174,15 @@ def vod():
         if play and flag:
             playerContent = eval(f"{play.split('___')[0]}.playerContent")(play, flag, ali_token)
             if len(playerContent) == 0:
-                with open("error_play.txt", "a") as f:
-                    f.write(f"{play}\n")
+                pass
+                # with open("error_play.txt", "a") as f:
+                #     f.write(f"{play}\n")
+            else:
+                if "m3u8" in playerContent:
+                    file_name = ''.join(random.sample(string.ascii_letters + string.digits, 5)) + '_' + str(
+                        int(round(time.time() * 1000)))
+                    cache.set(f"m3u8_{file_name}", playerContent.pop("m3u8"), 60 * 5)
+                    playerContent["url"] = f"{T4_Url}/m3u8proxy/{file_name}"
             return playerContent
 
         real_time_hotest = cache.get("real_time_hotest")
@@ -178,6 +201,16 @@ def vod():
         return jsonify({
             "list": []
         })
+
+
+@app.route('/m3u8proxy/<string:file_name>')
+def m3u8_proxy(file_name):
+    try:
+        m3u8_raw = cache.get(f"m3u8_{file_name}")
+        return m3u8_raw, 200, {'Content-Type': 'application/vnd.apple.mpegurl'}
+    except Exception as e:
+        print(e)
+        abort(404)
 
 
 @app.route('/')

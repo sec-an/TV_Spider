@@ -123,6 +123,7 @@ def detailContent(ids, token):
             print("当前没有可播放的内容")
             return []
         vodItems = []
+        playList = ""
         for source in sources:
             sourceName = source.get_text()
             playURL = Regex("/v_play/(.*)\\.html", source["href"])
@@ -225,8 +226,8 @@ def playerContent(ids, flag, token):
 
 
 if __name__ == '__main__':
-    # res = searchContent("星汉灿烂")
-    res = detailContent("czspp$11727", "")
+    res = searchContent("灰影人", "")
+    # res = detailContent("czspp$11727", "")
     # func = "playerContent"
     # res = playerContent("bXZfNDg2Mi1ubV82")
     # res = eval(func)("68614-1-1")

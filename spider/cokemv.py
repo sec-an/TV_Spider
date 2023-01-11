@@ -191,8 +191,8 @@ def playerContent(ids, flag, token):
 
 
 if __name__ == '__main__':
-    res = searchContent("灰影人", "")
-    # res = detailContent('cokemv$36569', "")
+    # res = searchContent("灰影人", "")
+    res = detailContent('cokemv$36569', "")
     # func = "playerContent"
     # res = playerContent("40542-1-1")
     # res = eval(func)("68614-1-1")

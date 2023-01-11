@@ -79,7 +79,7 @@ def playerContent(ids, flag, token):
 
 
 if __name__ == '__main__':
-    res = searchContent("暗黑", "")
+    res = searchContent("灰影人", "")
     # res = detailContent('onelist$767', "")
 
     print(res)
