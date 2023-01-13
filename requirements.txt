@@ -1,5 +1,6 @@
 flask
 flask-cors
+flask-compress
 pycryptodome
 beautifulsoup4
 ddddocr
