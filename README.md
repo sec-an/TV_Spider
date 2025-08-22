@@ -28,3 +28,10 @@
 ```gunicorn -w 4 -b 0.0.0.0:8080 app:app```
 ### 说明
 1. 部分爬虫代码参考自[Tangsan99999 / TvJar](https://github.com/Tangsan99999/TvJar)
+
+
+## 赞助
+
+本项目 CDN 加速及安全防护由 [Tencent EdgeOne](https://edgeone.ai/zh?from=github) 赞助
+
+<img src='https://github.com/user-attachments/assets/a8111283-d774-423d-8f7d-30b2521baa73' width='200'/>
